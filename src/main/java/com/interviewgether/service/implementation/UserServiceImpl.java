@@ -22,7 +22,27 @@ public class UserServiceImpl implements UserService {
     @Override
     public User create(User user) throws UserAlreadyExistsException {
         Assert.notNull(user, "User cannot be null");
-        return userRepository.save(user);
+        // Check if user with such email already exists
+        if(userRepository.findByEmail(user.getEmail()).isPresent()){
+            //  If so then return custom exception
+            throw new EmailAlreadyExistsException("Email already exists", "email");
+        }
+        // Check if user with such username already exists
+        if(userRepository.findByUsername(user.getUsername()).isPresent()){
+            //  If so then return custom exception
+            throw new UsernameAlreadyExistsException("Username already exists", "username");
+        }
+        try{
+            return userRepository.save(user);
+        } catch (DataIntegrityViolationException e){
+            // In case when
+            String causeFieldName = extractFieldFromExceptionMessage(e.getMostSpecificCause().getMessage());
+            throw new UserAlreadyExistsException(causeFieldName);
+        }
+    }
+
+    private String extractFieldFromExceptionMessage(String message){
+        return message.contains("username") ? "username" : "email";
     }
 
     @Override
