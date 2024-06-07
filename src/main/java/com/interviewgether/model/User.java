@@ -16,7 +16,7 @@ public class User {
     @Column(name = "user_id")
     private long userId;
 
-    @Column(unique = true)
+    @Column(unique = true, length = 15)
     @NotBlank(message = "Username is required")
     @Pattern(regexp = "^[a-zA-Z0-9]+$", message = "Username can only contain english letters and digits")
     @Size(min = 3, max = 15, message = "Username must be between 3 and 15 characters long")

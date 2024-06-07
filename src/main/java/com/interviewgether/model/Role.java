@@ -16,7 +16,7 @@ public class Role {
     private long id;
 
     @NotBlank
-    @Column(unique = true, name = "role_name")
+    @Column(unique = true, name = "role_name", length = 10)
     private String roleName;
 
     @ManyToMany(mappedBy = "roles")
