@@ -1,0 +1,90 @@
+.navbar_container{
+    position: fixed;
+    top: 0;
+    right: 0;
+    left: 0;
+    z-index: 999;
+
+    height: 10vh;
+    max-height: 70px;
+    display: flex;
+    justify-content: center;
+
+    box-shadow: 0px 7px 10px -8px rgba(0,0,0,0.70);
+    background-color: white;
+}
+
+.navbar{
+    height: 100%;
+    width: 100%;
+    margin: 0 20px;
+    display: flex;
+    align-items: center;
+}
+
+.navbar{ 
+    * {
+        display: flex;
+        flex-direction: row;
+        justify-content: center;
+        align-items: center;
+        color: black;
+    }
+    
+    > *{
+        margin: 0 5px; 
+    }
+
+    .app-name{
+        font-size: 20px;
+    }
+
+    .refers{
+        padding: 0;
+        margin-left: auto;
+    }
+
+    .refers li{
+        margin: 0 15px;
+        list-style: none;
+    }
+
+    .refers li a:hover{
+        font-weight: bold;
+        text-shadow: 8px 4px 4px rgba(0, 0, 0, 0.3);
+        transition: all 0.2s ease-in-out;
+        font-weight: bold;
+    }
+    
+    #login_btn, #signup_btn{
+        min-width: 80px;
+        height: 55%;
+        aspect-ratio: 2/1;
+        border-radius: 50px;
+        text-wrap: nowrap;
+    }
+    
+    #signup_btn{
+        color: white;
+        background-color: #1d3e5bec;
+    }
+    
+    #login_btn{
+        color: #737373;
+        
+        border: 1.5px solid #d6d6d6;
+    }
+    
+    .profile-icon{
+        height: 70%;
+        aspect-ratio: 1/1;
+        border-radius: 50%;
+        overflow: hidden;
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
+    }
+    
+    .profile-icon .profile-image, a{
+        height: 100%;
+        object-fit: cover;
+    }
+}

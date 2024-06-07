@@ -1,0 +1,15 @@
+.home_container{
+    position: relative;
+    top: 60px;
+}
+
+.greeting{
+    display: flex;
+    justify-content: center;
+}
+
+@media (min-width: 1900px) {
+    body{
+        font-size: 18px;
+    }
+}
