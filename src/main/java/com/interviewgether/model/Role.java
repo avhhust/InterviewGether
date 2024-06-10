@@ -3,6 +3,7 @@ package com.interviewgether.model;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
 
+import java.util.HashSet;
 import java.util.Objects;
 import java.util.Set;
 
@@ -20,7 +21,7 @@ public class Role {
     private String roleName;
 
     @ManyToMany(mappedBy = "roles")
-    private Set<User> users;
+    private Set<User> users = new HashSet<>();
 
     public long getId() {
         return id;

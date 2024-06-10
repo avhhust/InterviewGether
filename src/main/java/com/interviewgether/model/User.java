@@ -6,6 +6,7 @@ import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Pattern;
 import jakarta.validation.constraints.Size;
 
+import java.util.HashSet;
 import java.util.Set;
 
 @Entity
@@ -40,13 +41,16 @@ public class User {
     @Column
     private boolean isEnabled;
 
+    @OneToOne(mappedBy = "user", cascade = CascadeType.ALL, fetch = FetchType.LAZY, orphanRemoval = true)
+    private UserAccount userAccount;
+
     @ManyToMany
     @JoinTable(
             name = "user_roles",
             joinColumns = @JoinColumn(name = "user_id"),
             inverseJoinColumns = @JoinColumn(name = "role_id")
     )
-    private Set<Role> roles;
+    private Set<Role> roles = new HashSet<>();
 
     public User() {
     }
@@ -105,6 +109,14 @@ public class User {
 
     public void setEnabled(boolean enabled) {
         isEnabled = enabled;
+    }
+
+    public UserAccount getUserAccount() {
+        return userAccount;
+    }
+
+    public void setUserAccount(UserAccount userAccount) {
+        this.userAccount = userAccount;
     }
 
     public Set<Role> getRoles() {
