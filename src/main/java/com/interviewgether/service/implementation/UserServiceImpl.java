@@ -66,6 +66,12 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
+    public void deleteByUsername(String username) {
+        // find user by username and extract its Id, then pass to delete() method
+        delete(readByUsername(username).getUserId());
+    }
+
+    @Override
     public User readByEmail(String email) {
         Assert.notNull(email, "Email cannot be null");
         return userRepository

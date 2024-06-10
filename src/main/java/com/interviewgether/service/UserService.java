@@ -12,6 +12,7 @@ public interface UserService {
     User readById(long id);
     User update(User updatedUser);
     void delete(long id);
+    void deleteByUsername(String username);
     User readByEmail(String email);
     User readByUsername(String username);
 }
