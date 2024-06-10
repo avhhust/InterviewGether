@@ -10,15 +10,16 @@ import java.util.Objects;
 @Embeddable
 public class SocialNetwork {
     @NotBlank
+    @Column(nullable = false)
     private String socialNetworkName;
 
-    @Column
+    @NotBlank
+    @Column(unique = true, nullable = false)
     private String nickname;
 
-    @NotBlank
     @URL
-    @Column(name = "social_url")
-    private String socialURL;
+    @Column(name = "social_profile_url", unique = true)
+    private String socialProfileURL;
 
     public SocialNetwork() {
     }
@@ -39,12 +40,12 @@ public class SocialNetwork {
         this.nickname = nickname;
     }
 
-    public String getSocialURL() {
-        return socialURL;
+    public String getSocialProfileURL() {
+        return socialProfileURL;
     }
 
-    public void setSocialURL(String socialURL) {
-        this.socialURL = socialURL;
+    public void setSocialProfileURL(String socialURL) {
+        this.socialProfileURL = socialURL;
     }
 
     @Override
@@ -52,11 +53,11 @@ public class SocialNetwork {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         SocialNetwork that = (SocialNetwork) o;
-        return Objects.equals(socialNetworkName, that.socialNetworkName) && Objects.equals(nickname, that.nickname) && Objects.equals(socialURL, that.socialURL);
+        return Objects.equals(socialNetworkName, that.socialNetworkName) && Objects.equals(nickname, that.nickname) && Objects.equals(socialProfileURL, that.socialProfileURL);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(socialNetworkName, nickname, socialURL);
+        return Objects.hash(socialNetworkName, nickname, socialProfileURL);
     }
 }

@@ -3,6 +3,7 @@ package com.interviewgether.model;
 import com.interviewgether.model.embeddable.SocialNetwork;
 import com.interviewgether.model.enums.ProficiencyLevel;
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotNull;
 import org.hibernate.annotations.CreationTimestamp;
 
 import java.time.Instant;
@@ -24,8 +25,9 @@ public class UserAccount {
     @Column(name = "profile_picture_url")
     private String profilePictureUrl;
 
-    @Column(name = "number_completed_mocks")
-    private int numberCompletedMocks;
+    @NotNull
+    @Column(name = "number_completed_mocks", nullable = false)
+    private Integer numberCompletedMocks;
 
     @Enumerated
     @Column(name = "proficiency_level", length = 12)
