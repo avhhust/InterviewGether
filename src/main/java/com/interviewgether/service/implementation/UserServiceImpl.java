@@ -30,10 +30,10 @@ public class UserServiceImpl implements UserService {
     @Transactional
     public void create(User user) throws UserAlreadyExistsException {
         Assert.notNull(user, "User cannot be null");
-        if(userRepository.findByEmail(user.getEmail()).isPresent()){
+        if(userRepository.isEmailExists(user.getEmail())){
             throw new EmailAlreadyExistsException("Email already exists", "email");
         }
-        if(userRepository.findByUsername(user.getUsername()).isPresent()){
+        if(userRepository.isUsernameExists(user.getUsername())){
             throw new UsernameAlreadyExistsException("Username already exists", "username");
         }
         try{
@@ -41,12 +41,14 @@ public class UserServiceImpl implements UserService {
             UserAccount account = userAccountService.create(persistedUser);
             persistedUser.setUserAccount(account);
         } catch (DataIntegrityViolationException e){
+            // ToDo: Review later
             String errorMessage = e.getMostSpecificCause().getMessage();
-            if(errorMessage.contains("username")){
+            if(errorMessage.contains("username"))
                 throw new UsernameAlreadyExistsException("Username already exists", "username");
-            } else {
+            else if (errorMessage.contains("email"))
                 throw new EmailAlreadyExistsException("Email already exists", "email");
-            }
+            else
+                throw new UserAlreadyExistsException("User already exists");
         }
     }
 
