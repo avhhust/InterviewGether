@@ -1,12 +1,17 @@
 package com.interviewgether.service.implementation;
 
+import com.interviewgether.dto.user.UserAuthDTO;
+import com.interviewgether.dto.user.UserTransformer;
 import com.interviewgether.exception.DAL.EmailAlreadyExistsException;
 import com.interviewgether.exception.DAL.UserAlreadyExistsException;
 import com.interviewgether.exception.DAL.UsernameAlreadyExistsException;
 import com.interviewgether.model.User;
+import com.interviewgether.model.UserAccount;
 import com.interviewgether.repository.UserRepository;
+import com.interviewgether.service.UserAccountService;
 import com.interviewgether.service.UserService;
 import jakarta.persistence.EntityNotFoundException;
+import jakarta.transaction.Transactional;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
 import org.springframework.util.Assert;
@@ -14,35 +19,41 @@ import org.springframework.util.Assert;
 @Service
 public class UserServiceImpl implements UserService {
     private final UserRepository userRepository;
+    private final UserAccountService userAccountService;
 
-    public UserServiceImpl(UserRepository userRepository) {
+    public UserServiceImpl(UserRepository userRepository, UserAccountService userAccountService) {
         this.userRepository = userRepository;
+        this.userAccountService = userAccountService;
     }
 
     @Override
-    public User create(User user) throws UserAlreadyExistsException {
+    @Transactional
+    public void create(User user) throws UserAlreadyExistsException {
         Assert.notNull(user, "User cannot be null");
-        // Check if user with such email already exists
         if(userRepository.findByEmail(user.getEmail()).isPresent()){
-            //  If so then return custom exception
             throw new EmailAlreadyExistsException("Email already exists", "email");
         }
-        // Check if user with such username already exists
         if(userRepository.findByUsername(user.getUsername()).isPresent()){
-            //  If so then return custom exception
             throw new UsernameAlreadyExistsException("Username already exists", "username");
         }
         try{
-            return userRepository.save(user);
+            User persistedUser = userRepository.save(user);
+            UserAccount account = userAccountService.create(persistedUser);
+            persistedUser.setUserAccount(account);
         } catch (DataIntegrityViolationException e){
-            // In case when
-            String causeFieldName = extractFieldFromExceptionMessage(e.getMostSpecificCause().getMessage());
-            throw new UserAlreadyExistsException(causeFieldName);
+            String errorMessage = e.getMostSpecificCause().getMessage();
+            if(errorMessage.contains("username")){
+                throw new UsernameAlreadyExistsException("Username already exists", "username");
+            } else {
+                throw new EmailAlreadyExistsException("Email already exists", "email");
+            }
         }
     }
 
-    private String extractFieldFromExceptionMessage(String message){
-        return message.contains("username") ? "username" : "email";
+    @Override
+    @Transactional
+    public void create(UserAuthDTO userAuthDTO) {
+        create(UserTransformer.convertToUser(userAuthDTO));
     }
 
     @Override
@@ -63,12 +74,6 @@ public class UserServiceImpl implements UserService {
     public void delete(long id) {
         readById(id);
         userRepository.deleteById(id);
-    }
-
-    @Override
-    public void deleteByUsername(String username) {
-        // find user by username and extract its Id, then pass to delete() method
-        delete(readByUsername(username).getUserId());
     }
 
     @Override
