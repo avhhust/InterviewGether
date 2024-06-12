@@ -3,6 +3,7 @@ package com.interviewgether.model;
 import com.interviewgether.model.embeddable.SocialNetwork;
 import com.interviewgether.model.enums.ProficiencyLevel;
 import jakarta.persistence.*;
+import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotNull;
 import org.hibernate.annotations.CreationTimestamp;
 
@@ -25,7 +26,6 @@ public class UserAccount {
     @Column(name = "profile_picture_url")
     private String profilePictureUrl;
 
-    @NotNull
     @Column(name = "number_completed_mocks", nullable = false)
     private Integer numberCompletedMocks;
 
@@ -63,6 +63,7 @@ public class UserAccount {
     private OffsetDateTime createdAt;
 
     public UserAccount() {
+
     }
 
     public UserAccount(User user, String profilePictureUrl, int numberCompletedMocks, ProficiencyLevel proficiencyLevel, Set<SocialNetwork> socialNetworks, Set<MockRegistration> mockInterviews, List<Application> applications, List<Feedback> receivedFeedback, List<Feedback> sentFeedback, OffsetDateTime createdAt) {
