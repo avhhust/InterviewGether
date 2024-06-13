@@ -1,6 +1,4 @@
 package com.interviewgether.service;
-
-
 import com.interviewgether.dto.user.UserAuthDTO;
 import com.interviewgether.exception.DAL.EmailAlreadyExistsException;
 import com.interviewgether.exception.DAL.UsernameAlreadyExistsException;
@@ -24,7 +22,6 @@ import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
 public class UserServiceTest {
-
     @Mock
     private UserRepository userRepository;
     @Mock
@@ -178,7 +175,9 @@ public class UserServiceTest {
     void shouldThrowIllegalArgumentExceptionWhenUpdatingUserWithNull() {
         User nullUser = null;
         assertThatThrownBy(() -> userService.update(nullUser))
+                .isInstanceOf(IllegalArgumentException.class)
                 .hasMessageContaining("User cannot be null");
+        verify(userRepository, never()).save(any(User.class));
     }
 
     @Test
@@ -263,5 +262,4 @@ public class UserServiceTest {
                 .isInstanceOf(EntityNotFoundException.class)
                 .hasMessageContaining("User with email: " + email + " doesn't exist");
     }
-
 }

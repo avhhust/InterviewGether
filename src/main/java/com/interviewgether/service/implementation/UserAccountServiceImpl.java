@@ -31,13 +31,13 @@ public class UserAccountServiceImpl implements UserAccountService {
     @Override
     public UserAccount readById(long id) {
         return userAccountRepository.findById(id)
-                .orElseThrow(() -> new EntityNotFoundException("UserAccount with id " + id + "is not found"));
+                .orElseThrow(() -> new EntityNotFoundException("UserAccount with id " + id + " is not found"));
     }
 
+    // ToDo: Later change parameters to id(or username) and DTO ...
     @Override
     public UserAccount update(UserAccount userAccount) {
         Assert.notNull(userAccount, "UserAccount must not be null");
-        readById(userAccount.getId());
         return userAccountRepository.save(userAccount);
     }
 
