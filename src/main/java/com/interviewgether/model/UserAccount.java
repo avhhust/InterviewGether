@@ -26,7 +26,7 @@ public class UserAccount {
     @Column(name = "profile_picture_url")
     private String profilePictureUrl;
 
-    @Column(name = "number_completed_mocks", nullable = false)
+    @Column(name = "number_completed_mocks")
     private Integer numberCompletedMocks;
 
     @Enumerated

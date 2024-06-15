@@ -9,7 +9,7 @@ const initialState = { email: [], username: [], password: [] }
 
 const SignupForm = () => {    
     const [userData, setUserData] = useState({
-        email: "", username: "", password: ""
+        email: "test@gmail.com", username: "test", password: "Test123123"
     }); // stores user input data from the form
     const [errors, setErrors] = useState(initialState); // used to store error messages that are displayed under the input field
     // const [hints, setHints] = useState(initialState);
@@ -93,12 +93,24 @@ const SignupForm = () => {
         if(!isFormValid()) return;
         try {
             setIsLoading(true); 
-            const response = await api.post('/signup', userData);
+            const response = await api.post('/auth/signup', userData);
+
+
+            alert(JSON.stringify(response));
+
+
             console.log(response);
             navigate("/home"); // redirect to home page after successful registration
         } catch (error) {
             // Request reached server but server responded with an error
             if(error.response){
+
+
+
+                alert("Server response: " + JSON.stringify(error));
+
+
+
                 if(error.response.data.details){
                     const details = error.response.data.details;
                     // iterate over exception details which contains 
@@ -110,11 +122,24 @@ const SignupForm = () => {
             }
             // Request reached server but no response was recieved  
             else if(error.request){
+                // ToDo: implemenet logic 
+
+
+                alert("No response from the server");
+
+
                 // ... logic for 
             }
             // Request didn't reach server
             else {
+                // ToDo: implemenet logic
                 // ... logic for displaying network error
+
+
+                alert("Couldn't reach out to the server");
+
+
+
                 console.error(error);
             }
         } finally{

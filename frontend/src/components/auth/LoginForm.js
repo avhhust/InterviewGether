@@ -49,7 +49,7 @@ const LoginForm = () => {
         if(!isFormValid()) return;
         try{
             setIsLoading(true);
-            const response = await api.post('/signup', userData);
+            await api.post('/auth/login', userData);
             
         } catch(error){
             console.error(error);
@@ -59,7 +59,7 @@ const LoginForm = () => {
     }
 
     return(
-        <div className="auth_container" id="signup_cont">
+        <div className="auth_container" id="login_cont">
             <h2>Log In</h2>
             <form onSubmit={handleSubmit}>
                 <InputField

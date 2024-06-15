@@ -91,6 +91,6 @@ public class UserServiceImpl implements UserService {
         Assert.notNull(username, "Username cannot be null");
         return userRepository
                 .findByUsername(username)
-                .orElseThrow(() -> new EntityNotFoundException("User " + username + " doesn't exist"));
+                .orElseThrow(() -> new EntityNotFoundException("User with username: " + username + " doesn't exist"));
     }
 }
