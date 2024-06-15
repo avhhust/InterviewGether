@@ -1,5 +1,5 @@
 package com.interviewgether.service;
-import com.interviewgether.dto.user.UserAuthDTO;
+import com.interviewgether.dto.user.UserRegisterDTO;
 import com.interviewgether.exception.DAL.EmailAlreadyExistsException;
 import com.interviewgether.exception.DAL.UsernameAlreadyExistsException;
 import com.interviewgether.model.User;
@@ -45,11 +45,11 @@ public class UserServiceTest {
 
     @Test
     void shouldCreateUserWithProvidedUserAuthDTO() {
-        UserAuthDTO userAuthDTO =
-                new UserAuthDTO("username", "email", "password");
+        UserRegisterDTO userRegisterDTO =
+                new UserRegisterDTO("username", "email", "password");
         when(userRepository.save(any(User.class))).thenAnswer(ans -> ans.getArguments()[0]);
 
-        userService.create(userAuthDTO);
+        userService.create(userRegisterDTO);
 
         ArgumentCaptor<User> userArgumentCaptor =
                 ArgumentCaptor.forClass(User.class);
@@ -57,9 +57,9 @@ public class UserServiceTest {
                 .save(userArgumentCaptor.capture());
         User captured = userArgumentCaptor.getValue();
 
-        assertThat(captured.getUsername()).isEqualTo(userAuthDTO.getUsername());
-        assertThat(captured.getEmail()).isEqualTo(userAuthDTO.getEmail());
-        assertThat(captured.getPassword()).isEqualTo(userAuthDTO.getPassword());
+        assertThat(captured.getUsername()).isEqualTo(userRegisterDTO.getUsername());
+        assertThat(captured.getEmail()).isEqualTo(userRegisterDTO.getEmail());
+        assertThat(captured.getPassword()).isEqualTo(userRegisterDTO.getPassword());
     }
 
     @Test

@@ -1,6 +1,6 @@
 package com.interviewgether.service.implementation;
 
-import com.interviewgether.dto.user.UserAuthDTO;
+import com.interviewgether.dto.user.UserRegisterDTO;
 import com.interviewgether.dto.user.UserTransformer;
 import com.interviewgether.exception.DAL.EmailAlreadyExistsException;
 import com.interviewgether.exception.DAL.UserAlreadyExistsException;
@@ -54,8 +54,8 @@ public class UserServiceImpl implements UserService {
 
     @Override
     @Transactional
-    public void create(UserAuthDTO userAuthDTO) {
-        create(UserTransformer.convertToUser(userAuthDTO));
+    public void create(UserRegisterDTO userRegisterDTO) {
+        create(UserTransformer.convertToUser(userRegisterDTO));
     }
 
     @Override
