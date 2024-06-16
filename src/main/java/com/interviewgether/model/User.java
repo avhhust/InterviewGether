@@ -5,10 +5,15 @@ import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Pattern;
 import jakarta.validation.constraints.Size;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.core.userdetails.UserDetails;
 
+import java.util.Collection;
 import java.util.HashSet;
 import java.util.Objects;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 @Entity
 @Table(name = "users")
@@ -37,15 +42,12 @@ public class User {
     private String password;
 
     @Column
-    private String passwordSalt;
-
-    @Column
     private boolean isEnabled = true;
 
     @OneToOne(mappedBy = "user", cascade = CascadeType.ALL, fetch = FetchType.LAZY, orphanRemoval = true)
     private UserAccount userAccount;
 
-    @ManyToMany
+    @ManyToMany(cascade = CascadeType.ALL)
     @JoinTable(
             name = "user_roles",
             joinColumns = @JoinColumn(name = "user_id"),
@@ -96,14 +98,6 @@ public class User {
         this.password = password;
     }
 
-    public String getPasswordSalt() {
-        return passwordSalt;
-    }
-
-    public void setPasswordSalt(String passwordSalt) {
-        this.passwordSalt = passwordSalt;
-    }
-
     public boolean isEnabled() {
         return isEnabled;
     }
@@ -133,11 +127,11 @@ public class User {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         User user = (User) o;
-        return userId == user.userId && isEmailVerified == user.isEmailVerified && isEnabled == user.isEnabled && Objects.equals(username, user.username) && Objects.equals(email, user.email) && Objects.equals(password, user.password) && Objects.equals(passwordSalt, user.passwordSalt) && Objects.equals(userAccount, user.userAccount) && Objects.equals(roles, user.roles);
+        return userId == user.userId && isEmailVerified == user.isEmailVerified && isEnabled == user.isEnabled && Objects.equals(username, user.username) && Objects.equals(email, user.email) && Objects.equals(password, user.password) && Objects.equals(userAccount, user.userAccount) && Objects.equals(roles, user.roles);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(userId, username, email, isEmailVerified, password, passwordSalt, isEnabled, userAccount, roles);
+        return Objects.hash(userId, username, email, isEmailVerified, password, isEnabled, userAccount, roles);
     }
 }
