@@ -3,6 +3,7 @@ package com.interviewgether.service.implementation;
 
 import com.interviewgether.model.Role;
 import com.interviewgether.repository.RoleRepository;
+import com.interviewgether.repository.UserRepository;
 import com.interviewgether.service.RoleService;
 import com.interviewgether.service.UserService;
 import jakarta.persistence.EntityNotFoundException;
@@ -15,11 +16,11 @@ import java.util.List;
 public class RoleServiceImpl implements RoleService {
 
     private final RoleRepository roleRepository;
-    private final UserService userService;
+    private final UserRepository userRepository;
 
-    public RoleServiceImpl(RoleRepository roleRepository, UserService userService) {
+    public RoleServiceImpl(RoleRepository roleRepository, UserRepository userRepository) {
         this.roleRepository = roleRepository;
-        this.userService = userService;
+        this.userRepository = userRepository;
     }
 
     @Override
@@ -55,7 +56,16 @@ public class RoleServiceImpl implements RoleService {
 
     @Override
     public List<Role> findAllByUser(long userId) {
-        userService.readById(userId);
+        // to avoid circular dependency
+        userRepository.findById(userId).orElseThrow(() -> new EntityNotFoundException("User with id " + userId + " doesn't exist"));
         return roleRepository.findAllByUser(userId);
+    }
+
+    @Override
+    public Role findByRoleName(String name) {
+        Assert.notNull(name, "Role name cannot be null");
+        return roleRepository
+                .findByRoleName(name)
+                .orElseThrow(() -> new EntityNotFoundException("Role " + name + " doesn't exists"));
     }
 }
