@@ -34,8 +34,7 @@ public class MockRegistration {
     public MockRegistration() {
     }
 
-    public MockRegistration(MockRegistrationId mockRegistrationId, MockInterview mockInterview, UserAccount participant, Application application, ParticipantRole participantRole) {
-        this.mockRegistrationId = mockRegistrationId;
+    public MockRegistration(MockInterview mockInterview, UserAccount participant, Application application, ParticipantRole participantRole) {
         this.mockInterview = mockInterview;
         this.participant = participant;
         this.application = application;
@@ -87,11 +86,11 @@ public class MockRegistration {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         MockRegistration that = (MockRegistration) o;
-        return Objects.equals(mockRegistrationId, that.mockRegistrationId) && Objects.equals(mockInterview, that.mockInterview) && Objects.equals(participant, that.participant) && Objects.equals(application, that.application) && participantRole == that.participantRole;
+        return Objects.equals(mockInterview, that.mockInterview) && Objects.equals(participant, that.participant) && Objects.equals(application, that.application) && participantRole == that.participantRole;
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(mockRegistrationId, mockInterview, participant, application, participantRole);
+        return Objects.hash(mockInterview, participant, application, participantRole);
     }
 }

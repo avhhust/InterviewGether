@@ -5,15 +5,11 @@ import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Pattern;
 import jakarta.validation.constraints.Size;
-import org.springframework.security.core.GrantedAuthority;
-import org.springframework.security.core.authority.SimpleGrantedAuthority;
-import org.springframework.security.core.userdetails.UserDetails;
+import org.hibernate.annotations.NaturalId;
 
-import java.util.Collection;
 import java.util.HashSet;
 import java.util.Objects;
 import java.util.Set;
-import java.util.stream.Collectors;
 
 @Entity
 @Table(name = "users")
@@ -23,7 +19,8 @@ public class User {
     @Column(name = "user_id")
     private long userId;
 
-    @Column(unique = true, length = 15, nullable = false)
+    @NaturalId
+    @Column(unique = true, length = 15, nullable = false, updatable = false)
     @NotBlank(message = "Username is required")
     @Pattern(regexp = "^[a-zA-Z0-9]+$", message = "Username can only contain english letters and digits")
     @Size(min = 3, max = 15, message = "Username must be between 3 and 15 characters long")
@@ -47,7 +44,7 @@ public class User {
     @OneToOne(mappedBy = "user", cascade = CascadeType.ALL, fetch = FetchType.LAZY, orphanRemoval = true)
     private UserAccount userAccount;
 
-    @ManyToMany(cascade = CascadeType.ALL)
+    @ManyToMany
     @JoinTable(
             name = "user_roles",
             joinColumns = @JoinColumn(name = "user_id"),
@@ -127,11 +124,11 @@ public class User {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         User user = (User) o;
-        return userId == user.userId && isEmailVerified == user.isEmailVerified && isEnabled == user.isEnabled && Objects.equals(username, user.username) && Objects.equals(email, user.email) && Objects.equals(password, user.password) && Objects.equals(userAccount, user.userAccount) && Objects.equals(roles, user.roles);
+        return Objects.equals(username, user.username) && Objects.equals(email, user.email) && Objects.equals(password, user.password);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(userId, username, email, isEmailVerified, password, isEnabled, userAccount, roles);
+        return Objects.hash(username);
     }
 }

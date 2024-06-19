@@ -15,7 +15,7 @@ public class Role {
     private long id;
 
     @NotBlank
-    @Column(unique = true, name = "role_name", length = 10)
+    @Column(unique = true, name = "role_name", length = 10, updatable = false)
     private String roleName;
 
     @ManyToMany(mappedBy = "roles", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
@@ -50,20 +50,12 @@ public class Role {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Role role = (Role) o;
-        return id == role.id && Objects.equals(roleName, role.roleName) && Objects.equals(users, role.users);
+        return Objects.equals(roleName, role.roleName);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, roleName, users);
+        return Objects.hash(roleName);
     }
 
-    @Override
-    public String toString() {
-        return "Role{" +
-                "id=" + id +
-                ", roleName='" + roleName + '\'' +
-                ", users=" + users +
-                '}';
-    }
 }

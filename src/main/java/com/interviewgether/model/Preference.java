@@ -43,8 +43,7 @@ public class Preference {
     public Preference() {
     }
 
-    public Preference(Long id, Application application, MockDuration mockDuration, Integer totalNumberOfInterviews, Integer interviewsPerDay, String additionalPreferences, Set<DayTimeRange> dayTimeRanges) {
-        this.id = id;
+    public Preference(Application application, MockDuration mockDuration, Integer totalNumberOfInterviews, Integer interviewsPerDay, String additionalPreferences, Set<DayTimeRange> dayTimeRanges) {
         this.application = application;
         this.mockDuration = mockDuration;
         this.totalNumberOfInterviews = totalNumberOfInterviews;
@@ -114,11 +113,11 @@ public class Preference {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Preference that = (Preference) o;
-        return Objects.equals(id, that.id) && Objects.equals(application, that.application) && mockDuration == that.mockDuration && Objects.equals(totalNumberOfInterviews, that.totalNumberOfInterviews) && Objects.equals(interviewsPerDay, that.interviewsPerDay) && Objects.equals(additionalPreferences, that.additionalPreferences) && Objects.equals(dayTimeRanges, that.dayTimeRanges);
+        return Objects.equals(application, that.application) && mockDuration == that.mockDuration && Objects.equals(totalNumberOfInterviews, that.totalNumberOfInterviews) && Objects.equals(interviewsPerDay, that.interviewsPerDay) && Objects.equals(additionalPreferences, that.additionalPreferences) && Objects.equals(dayTimeRanges, that.dayTimeRanges);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, application, mockDuration, totalNumberOfInterviews, interviewsPerDay, additionalPreferences, dayTimeRanges);
+        return Objects.hash(application, mockDuration, totalNumberOfInterviews, interviewsPerDay, additionalPreferences, dayTimeRanges);
     }
 }
