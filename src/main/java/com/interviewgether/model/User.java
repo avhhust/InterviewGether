@@ -5,6 +5,7 @@ import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Pattern;
 import jakarta.validation.constraints.Size;
+import org.hibernate.annotations.NaturalId;
 
 import java.util.HashSet;
 import java.util.Objects;
@@ -18,7 +19,8 @@ public class User {
     @Column(name = "user_id")
     private long userId;
 
-    @Column(unique = true, length = 15, nullable = false)
+    @NaturalId
+    @Column(unique = true, length = 15, nullable = false, updatable = false)
     @NotBlank(message = "Username is required")
     @Pattern(regexp = "^[a-zA-Z0-9]+$", message = "Username can only contain english letters and digits")
     @Size(min = 3, max = 15, message = "Username must be between 3 and 15 characters long")
@@ -35,9 +37,6 @@ public class User {
     @NotBlank(message = "Password is required")
     @Column(name = "password")
     private String password;
-
-    @Column
-    private String passwordSalt;
 
     @Column
     private boolean isEnabled = true;
@@ -96,14 +95,6 @@ public class User {
         this.password = password;
     }
 
-    public String getPasswordSalt() {
-        return passwordSalt;
-    }
-
-    public void setPasswordSalt(String passwordSalt) {
-        this.passwordSalt = passwordSalt;
-    }
-
     public boolean isEnabled() {
         return isEnabled;
     }
@@ -133,11 +124,11 @@ public class User {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         User user = (User) o;
-        return userId == user.userId && isEmailVerified == user.isEmailVerified && isEnabled == user.isEnabled && Objects.equals(username, user.username) && Objects.equals(email, user.email) && Objects.equals(password, user.password) && Objects.equals(passwordSalt, user.passwordSalt) && Objects.equals(userAccount, user.userAccount) && Objects.equals(roles, user.roles);
+        return Objects.equals(username, user.username) && Objects.equals(email, user.email) && Objects.equals(password, user.password);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(userId, username, email, isEmailVerified, password, passwordSalt, isEnabled, userAccount, roles);
+        return Objects.hash(username);
     }
 }

@@ -73,11 +73,11 @@ public class FeedbackRating {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         FeedbackRating that = (FeedbackRating) o;
-        return Objects.equals(feedbackRatingId, that.feedbackRatingId) && Objects.equals(feedback, that.feedback) && Objects.equals(ratingAspect, that.ratingAspect) && Objects.equals(ratingValue, that.ratingValue);
+        return Objects.equals(feedback, that.feedback) && Objects.equals(ratingAspect, that.ratingAspect) && Objects.equals(ratingValue, that.ratingValue);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(feedbackRatingId, feedback, ratingAspect, ratingValue);
+        return Objects.hash(feedback, ratingAspect, ratingValue);
     }
 }

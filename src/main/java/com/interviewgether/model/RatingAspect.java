@@ -18,8 +18,7 @@ public class RatingAspect {
     public RatingAspect() {
     }
 
-    public RatingAspect(Long id, String ratingAspectName) {
-        this.id = id;
+    public RatingAspect(String ratingAspectName) {
         this.ratingAspectName = ratingAspectName;
     }
 
@@ -44,11 +43,11 @@ public class RatingAspect {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         RatingAspect that = (RatingAspect) o;
-        return Objects.equals(id, that.id) && Objects.equals(ratingAspectName, that.ratingAspectName);
+        return Objects.equals(ratingAspectName, that.ratingAspectName);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, ratingAspectName);
+        return Objects.hash(ratingAspectName);
     }
 }

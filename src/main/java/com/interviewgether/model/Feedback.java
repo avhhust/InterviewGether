@@ -99,11 +99,11 @@ public class Feedback {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Feedback feedback = (Feedback) o;
-        return Objects.equals(feedbackId, feedback.feedbackId) && Objects.equals(sender, feedback.sender) && Objects.equals(receiver, feedback.receiver) && Objects.equals(ratings, feedback.ratings) && Objects.equals(comment, feedback.comment) && Objects.equals(createdAt, feedback.createdAt);
+        return Objects.equals(sender, feedback.sender) && Objects.equals(receiver, feedback.receiver) && Objects.equals(ratings, feedback.ratings) && Objects.equals(comment, feedback.comment) && Objects.equals(createdAt, feedback.createdAt);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(feedbackId, sender, receiver, ratings, comment, createdAt);
+        return Objects.hash(sender, receiver, ratings, comment, createdAt);
     }
 }

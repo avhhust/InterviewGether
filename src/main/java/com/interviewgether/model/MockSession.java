@@ -12,9 +12,6 @@ public class MockSession {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long mockSessionId;
 
-    @Column(name = "is_active")
-    private boolean isActive;
-
     @NotNull
     @Column(name = "start_date_time")
     private OffsetDateTime startDateTime;
@@ -38,13 +35,10 @@ public class MockSession {
     public MockSession() {
     }
 
-    public MockSession(long mockSessionId, boolean isActive, OffsetDateTime startDateTime, OffsetDateTime endDateTime, List<Application> applications, Set<MockInterview> mockInterviews) {
-        this.mockSessionId = mockSessionId;
-        this.isActive = isActive;
+    public MockSession(OffsetDateTime startDateTime, OffsetDateTime endDateTime, List<Application> applications) {
         this.startDateTime = startDateTime;
         this.endDateTime = endDateTime;
         this.applications = applications;
-        this.mockInterviews = mockInterviews;
     }
 
     public long getMockSessionId() {
@@ -53,14 +47,6 @@ public class MockSession {
 
     public void setMockSessionId(long mockSessionId) {
         this.mockSessionId = mockSessionId;
-    }
-
-    public boolean isActive() {
-        return isActive;
-    }
-
-    public void setActive(boolean active) {
-        isActive = active;
     }
 
     public OffsetDateTime getStartDateTime() {
@@ -100,11 +86,11 @@ public class MockSession {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         MockSession that = (MockSession) o;
-        return mockSessionId == that.mockSessionId && isActive == that.isActive && Objects.equals(startDateTime, that.startDateTime) && Objects.equals(endDateTime, that.endDateTime) && Objects.equals(applications, that.applications) && Objects.equals(mockInterviews, that.mockInterviews);
+        return Objects.equals(startDateTime, that.startDateTime) && Objects.equals(endDateTime, that.endDateTime) && Objects.equals(applications, that.applications) && Objects.equals(mockInterviews, that.mockInterviews);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(mockSessionId, isActive, startDateTime, endDateTime, applications, mockInterviews);
+        return Objects.hash(startDateTime, endDateTime, applications, mockInterviews);
     }
 }

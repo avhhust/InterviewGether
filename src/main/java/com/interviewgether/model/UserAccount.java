@@ -66,17 +66,8 @@ public class UserAccount {
 
     }
 
-    public UserAccount(User user, String profilePictureUrl, int numberCompletedMocks, ProficiencyLevel proficiencyLevel, Set<SocialNetwork> socialNetworks, Set<MockRegistration> mockInterviews, List<Application> applications, List<Feedback> receivedFeedback, List<Feedback> sentFeedback, OffsetDateTime createdAt) {
+    public UserAccount(User user) {
         this.user = user;
-        this.profilePictureUrl = profilePictureUrl;
-        this.numberCompletedMocks = numberCompletedMocks;
-        this.proficiencyLevel = proficiencyLevel;
-        this.socialNetworks = socialNetworks;
-        this.mockInterviews = mockInterviews;
-        this.applications = applications;
-        this.receivedFeedback = receivedFeedback;
-        this.sentFeedback = sentFeedback;
-        this.createdAt = createdAt;
     }
 
     public Long getId() {
@@ -172,11 +163,11 @@ public class UserAccount {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         UserAccount that = (UserAccount) o;
-        return numberCompletedMocks == that.numberCompletedMocks && Objects.equals(user, that.user) && Objects.equals(profilePictureUrl, that.profilePictureUrl) && proficiencyLevel == that.proficiencyLevel && Objects.equals(socialNetworks, that.socialNetworks) && Objects.equals(mockInterviews, that.mockInterviews) && Objects.equals(applications, that.applications) && Objects.equals(receivedFeedback, that.receivedFeedback) && Objects.equals(sentFeedback, that.sentFeedback) && Objects.equals(createdAt, that.createdAt);
+        return Objects.equals(user, that.user) && Objects.equals(profilePictureUrl, that.profilePictureUrl) && Objects.equals(numberCompletedMocks, that.numberCompletedMocks) && proficiencyLevel == that.proficiencyLevel && Objects.equals(createdAt, that.createdAt);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(user, profilePictureUrl, numberCompletedMocks, proficiencyLevel, socialNetworks, mockInterviews, applications, receivedFeedback, sentFeedback, createdAt);
+        return Objects.hash(user, profilePictureUrl, numberCompletedMocks, proficiencyLevel, createdAt);
     }
 }
