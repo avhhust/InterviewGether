@@ -99,13 +99,7 @@ public class UserAccountServiceTest {
                 .hasMessageContaining("UserAccount with id " + id + " is not found");
     }
 
-    // ToDo: Implement later after method's implementation updated
-    @Test
-    @Disabled
-    void shouldUpdateUserAccountWhenValidUserAccountProvided() {
-        UserAccount oldAccount = new UserAccount();
-
-    }
+    // ToDo: Implement shouldUpdateUserAccountWhenValidUserAccountProvided
 
     @Test
     void shouldThrowIllegalArgumentExceptionWhenUpdatingUserWithNull() {

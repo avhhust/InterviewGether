@@ -18,7 +18,7 @@ public class UserRepositoryTest {
     }
 
     @Test
-    void Should_ReturnTrue_When_EmailExists() {
+    void shouldReturnTrueWhenEmailExists() {
         //given
         String email = "test@email.com";
         User user = new User();
@@ -33,7 +33,7 @@ public class UserRepositoryTest {
     }
 
     @Test
-    void Should_ReturnFalse_When_EmailDoesntExist() {
+    void shouldReturnFalseWhenEmailDoesntExist() {
         //given
         String email = "test@email.com";
         //when
@@ -43,7 +43,7 @@ public class UserRepositoryTest {
     }
 
     @Test
-    void Should_ReturnTrue_When_UsernameExists() {
+    void shouldReturnTrueWhenUsernameExists() {
         //given
         String username = "username";
         User user = new User();
@@ -58,7 +58,7 @@ public class UserRepositoryTest {
     }
 
     @Test
-    void Should_ReturnFalse_When_UsernameDoesntExist() {
+    void shouldReturnFalseWhenUsernameDoesntExist() {
         //given
         String username = "username";
         //when
@@ -67,5 +67,18 @@ public class UserRepositoryTest {
         assertThat(result).isFalse();
     }
 
+    @Test
+    void shouldReturnUserByUsername(){
+        String username = "username";
+        User user = new User();
+        user.setUsername(username);
+        user.setEmail("test@email.com");
+        user.setPassword("password");
+        userRepository.save(user);
+
+        User founded = userRepository.findByUsername(username).orElse(new User());
+
+        assertThat(founded).isEqualTo(user);
+    }
 
 }

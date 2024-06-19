@@ -1,5 +1,6 @@
 package com.interviewgether.model;
 
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
@@ -41,15 +42,16 @@ public class User {
     @Column
     private boolean isEnabled = true;
 
-    @OneToOne(mappedBy = "user", cascade = CascadeType.ALL, fetch = FetchType.LAZY, orphanRemoval = true)
+    @OneToOne(mappedBy = "user", fetch = FetchType.LAZY, orphanRemoval = true)
     private UserAccount userAccount;
 
-    @ManyToMany
+    @ManyToMany(cascade = {CascadeType.PERSIST, CascadeType.MERGE})
     @JoinTable(
             name = "user_roles",
             joinColumns = @JoinColumn(name = "user_id"),
             inverseJoinColumns = @JoinColumn(name = "role_id")
     )
+    @JsonManagedReference
     private Set<Role> roles = new HashSet<>();
 
     public User() {
@@ -109,6 +111,16 @@ public class User {
 
     public void setUserAccount(UserAccount userAccount) {
         this.userAccount = userAccount;
+    }
+
+    public void addRole(Role role){
+        roles.add(role);
+        role.getUsers().add(this);
+    }
+
+    public void removeRole(Role role){
+        roles.remove(role);
+        role.getUsers().remove(this);
     }
 
     public Set<Role> getRoles() {

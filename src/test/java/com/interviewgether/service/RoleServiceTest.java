@@ -1,6 +1,7 @@
 package com.interviewgether.service;
 
 import com.interviewgether.model.Role;
+import com.interviewgether.model.User;
 import com.interviewgether.repository.RoleRepository;
 import com.interviewgether.service.implementation.RoleServiceImpl;
 import jakarta.persistence.EntityNotFoundException;
@@ -11,6 +12,7 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
+import java.util.List;
 import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -22,6 +24,8 @@ import static org.mockito.Mockito.*;
 class RoleServiceTest {
     @Mock
     RoleRepository roleRepository;
+    @Mock
+    UserService userService;
     @InjectMocks
     RoleServiceImpl roleService;
 
@@ -155,4 +159,49 @@ class RoleServiceTest {
         verify(roleRepository, times(1)).findAll();
     }
 
+    @Test
+    void shouldFindAllRolesByUser() {
+        Role admin = new Role("ADMIN");
+        Role user = new Role("USER");
+        when(roleRepository.findAllByUser(anyLong())).thenReturn(List.of(admin, user));
+        when(userService.readById(anyLong())).thenReturn(new User());
+
+        long id = 1L;
+        List<Role> roles = roleService.getRolesByUser(id);
+
+        ArgumentCaptor<Long> idArgCaptor =
+                ArgumentCaptor.forClass(long.class);
+        verify(roleRepository, times(1))
+                .findAllByUser(idArgCaptor.capture());
+
+        assertThat(idArgCaptor.getValue()).isEqualTo(id);
+        assertThat(roles).containsAll(List.of(admin, user));
+    }
+
+    @Test
+    void shouldFindRoleByItsName() {
+        String roleName = "ADMIN";
+        when(roleRepository.findByRoleName("ADMIN")).thenReturn(Optional.of(new Role("ADMIN")));
+
+        Role role = roleService.findByRoleName(roleName);
+
+        ArgumentCaptor<String> nameArgCaptor =
+                ArgumentCaptor.forClass(String.class);
+
+        verify(roleRepository, times(1))
+                .findByRoleName(nameArgCaptor.capture());
+
+        assertThat(nameArgCaptor.getValue()).isEqualTo(roleName);
+        assertThat(role.getRoleName()).isEqualTo(roleName);
+    }
+
+    @Test
+    void shouldThrowExceptionIfRoleWithSuchNameDoesntExist() {
+        when(roleRepository.findByRoleName(anyString())).thenReturn(Optional.empty());
+        String nonExistingName = "ROLE";
+
+        assertThatThrownBy(() -> roleService.findByRoleName(nonExistingName))
+                .isInstanceOf(EntityNotFoundException.class)
+                .hasMessageContaining("Role " + nonExistingName + " doesn't exists");
+    }
 }

@@ -2,17 +2,23 @@ package com.interviewgether.service;
 import com.interviewgether.dto.user.UserRegisterDTO;
 import com.interviewgether.exception.DAL.EmailAlreadyExistsException;
 import com.interviewgether.exception.DAL.UsernameAlreadyExistsException;
+import com.interviewgether.model.Role;
 import com.interviewgether.model.User;
+import com.interviewgether.repository.RoleRepository;
 import com.interviewgether.repository.UserRepository;
 import com.interviewgether.service.implementation.UserServiceImpl;
 import jakarta.persistence.EntityNotFoundException;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.ArgumentCaptor;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
+import org.mockito.Spy;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.dao.DataIntegrityViolationException;
+import org.springframework.security.crypto.password.PasswordEncoder;
 
 import java.util.Optional;
 
@@ -22,17 +28,26 @@ import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
 public class UserServiceTest {
+
+    // ToDo: add test for updated create(UserRegisterDTO) method
     @Mock
     private UserRepository userRepository;
     @Mock
     private UserAccountService userAccountService;
+    @Mock
+    private RoleRepository roleRepository;
+    @Mock
+    private PasswordEncoder passwordEncoder;
+
     @InjectMocks
     private UserServiceImpl userService;
+
 
     @Test
     void shouldCreateUserWhenValidUserProvided() {
         User user = new User();
         when(userRepository.save(user)).thenReturn(user);
+        when(roleRepository.findByRoleName(anyString())).thenReturn(Optional.of(new Role("USER")));
         //when
         userService.create(user);
         //then
@@ -44,10 +59,50 @@ public class UserServiceTest {
     }
 
     @Test
-    void shouldCreateUserWithProvidedUserAuthDTO() {
+    void shouldAssignDefaultRoleWhenCreatingUser() {
+        User user = new User();
+
+        UserServiceImpl spyService = spy(userService);
+        when(userRepository.save(user)).thenReturn(user);
+        when(roleRepository.findByRoleName(anyString())).thenReturn(Optional.of(new Role("USER")));
+
+        spyService.create(user);
+
+        verify(spyService).setDefaultRole(user);
+    }
+
+    @Test
+    void shouldCreateDefaultRoleIfOneDoesntExistsAlready() {
+        User user = new User();
+        when(roleRepository.findByRoleName(anyString())).thenReturn(Optional.empty());
+        when(roleRepository.save(any(Role.class))).thenReturn(new Role("USER"));
+
+        userService.setDefaultRole(user);
+
+        ArgumentCaptor<Role> roleArgCaptor = ArgumentCaptor.forClass(Role.class);
+        verify(roleRepository, times(1)).save(roleArgCaptor.capture());
+        Role captured = roleArgCaptor.getValue();
+        assertThat(captured.getRoleName()).isEqualTo("USER");
+    }
+
+    @Test
+    void shouldSetRoleWithNameUSERToUser() {
+        User user = new User();
+        Role roleUser = new Role("USER");
+        when(roleRepository.findByRoleName(anyString())).thenReturn(Optional.of(roleUser));
+
+        userService.setDefaultRole(user);
+
+        assertThat(user.getRoles()).contains(roleUser);
+
+    }
+
+    @Test
+    void shouldCreateUserWithProvidedUserRegisterDTO() {
         UserRegisterDTO userRegisterDTO =
                 new UserRegisterDTO("username", "email", "password");
         when(userRepository.save(any(User.class))).thenAnswer(ans -> ans.getArguments()[0]);
+        when(roleRepository.findByRoleName(anyString())).thenReturn(Optional.of(new Role("USER")));
 
         userService.create(userRegisterDTO);
 
@@ -63,6 +118,19 @@ public class UserServiceTest {
     }
 
     @Test
+    void shouldEncodePasswordWhenCreatingUserFromUserRegisterDTO() {
+        String password = "password";
+        UserRegisterDTO userRegisterDTO = new UserRegisterDTO();
+        userRegisterDTO.setPassword(password);
+        when(userRepository.save(any(User.class))).thenAnswer(ans -> ans.getArgument(0));
+        when(roleRepository.findByRoleName(anyString())).thenReturn(Optional.of(new Role("USER")));
+
+        userService.create(userRegisterDTO);
+
+        verify(passwordEncoder, times(1)).encode(password);
+    }
+
+    @Test
     void shouldThrowIllegalArgumentExceptionWhenCreatingUserWithNull() {
         User nullUser = null;
         assertThatThrownBy(() -> userService.create(nullUser))
@@ -73,6 +141,7 @@ public class UserServiceTest {
     void shouldCreateUserAccountWhenCreatingUser(){
         User user = new User();
         when(userRepository.save(user)).thenReturn(user);
+        when(roleRepository.findByRoleName(anyString())).thenReturn(Optional.of(new Role("USER")));
         //when
         userService.create(user);
         //then
@@ -87,6 +156,7 @@ public class UserServiceTest {
         User user = new User();
         user.setEmail("email@test.com");
         when(userRepository.isEmailExists(anyString())).thenReturn(true);
+        when(roleRepository.findByRoleName(anyString())).thenReturn(Optional.of(new Role("USER")));
 
         assertThatThrownBy(() -> userService.create(user))
                 .isInstanceOf(EmailAlreadyExistsException.class)
@@ -98,6 +168,7 @@ public class UserServiceTest {
         User user = new User();
         user.setUsername("username");
         when(userRepository.isUsernameExists(anyString())).thenReturn(true);
+        when(roleRepository.findByRoleName(anyString())).thenReturn(Optional.of(new Role("USER")));
 
         assertThatThrownBy(() -> userService.create(user))
                 .isInstanceOf(UsernameAlreadyExistsException.class)
@@ -108,6 +179,7 @@ public class UserServiceTest {
     void shouldThrowExceptionWhenDataIntegrityViolationOccursDueToUsername(){
         when(userRepository.save(any(User.class)))
                 .thenThrow(new DataIntegrityViolationException("username"));
+        when(roleRepository.findByRoleName(anyString())).thenReturn(Optional.of(new Role("USER")));
 
         assertThatThrownBy(() -> userService.create(new User()))
                 .isInstanceOf(UsernameAlreadyExistsException.class)
@@ -118,6 +190,7 @@ public class UserServiceTest {
     void shouldThrowExceptionWhenDataIntegrityViolationOccursDueToEmail(){
         when(userRepository.save(any(User.class)))
                 .thenThrow(new DataIntegrityViolationException("email"));
+        when(roleRepository.findByRoleName(anyString())).thenReturn(Optional.of(new Role("USER")));
 
         assertThatThrownBy(() -> userService.create(new User()))
                 .isInstanceOf(EmailAlreadyExistsException.class)
@@ -226,7 +299,7 @@ public class UserServiceTest {
 
         assertThatThrownBy(() -> userService.readByUsername(username))
                 .isInstanceOf(EntityNotFoundException.class)
-                .hasMessageContaining("User " + username + " doesn't exist");
+                .hasMessageContaining("User with username: " + username + " doesn't exist");
     }
 
     @Test

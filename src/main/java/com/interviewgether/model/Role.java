@@ -1,5 +1,6 @@
 package com.interviewgether.model;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
 
@@ -18,8 +19,19 @@ public class Role {
     @Column(unique = true, name = "role_name", length = 10, updatable = false)
     private String roleName;
 
-    @ManyToMany(mappedBy = "roles", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @ManyToMany(mappedBy = "roles",
+            fetch = FetchType.LAZY,
+            cascade = {CascadeType.PERSIST, CascadeType.MERGE}
+    )
+    @JsonBackReference
     private List<User> users = new ArrayList<>();
+
+    public Role() {
+    }
+
+    public Role(String roleName) {
+        this.roleName = roleName;
+    }
 
     public long getId() {
         return id;
