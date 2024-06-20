@@ -55,13 +55,6 @@ public class RoleServiceImpl implements RoleService {
     }
 
     @Override
-    public List<Role> getRolesByUser(long userId) {
-        // Using repository instead of service, to avoid circular dependency
-        userService.readById(userId);
-        return roleRepository.findAllByUser(userId);
-    }
-
-    @Override
     public Role findByRoleName(String name) {
         Assert.notNull(name, "Role name cannot be null");
         return roleRepository

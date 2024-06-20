@@ -160,25 +160,6 @@ class RoleServiceTest {
     }
 
     @Test
-    void shouldFindAllRolesByUser() {
-        Role admin = new Role("ADMIN");
-        Role user = new Role("USER");
-        when(roleRepository.findAllByUser(anyLong())).thenReturn(List.of(admin, user));
-        when(userService.readById(anyLong())).thenReturn(new User());
-
-        long id = 1L;
-        List<Role> roles = roleService.getRolesByUser(id);
-
-        ArgumentCaptor<Long> idArgCaptor =
-                ArgumentCaptor.forClass(long.class);
-        verify(roleRepository, times(1))
-                .findAllByUser(idArgCaptor.capture());
-
-        assertThat(idArgCaptor.getValue()).isEqualTo(id);
-        assertThat(roles).containsAll(List.of(admin, user));
-    }
-
-    @Test
     void shouldFindRoleByItsName() {
         String roleName = "ADMIN";
         when(roleRepository.findByRoleName("ADMIN")).thenReturn(Optional.of(new Role("ADMIN")));
