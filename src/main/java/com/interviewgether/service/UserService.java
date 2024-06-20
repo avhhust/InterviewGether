@@ -11,4 +11,5 @@ public interface UserService {
     void delete(long id);
     User readByEmail(String email);
     User readByUsername(String username);
+    User readUserWithRolesByUsername(String username);
 }

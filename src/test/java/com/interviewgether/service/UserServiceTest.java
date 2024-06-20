@@ -8,14 +8,11 @@ import com.interviewgether.repository.RoleRepository;
 import com.interviewgether.repository.UserRepository;
 import com.interviewgether.service.implementation.UserServiceImpl;
 import jakarta.persistence.EntityNotFoundException;
-import org.junit.jupiter.api.BeforeAll;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.ArgumentCaptor;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.Spy;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -156,7 +153,6 @@ public class UserServiceTest {
         User user = new User();
         user.setEmail("email@test.com");
         when(userRepository.isEmailExists(anyString())).thenReturn(true);
-        when(roleRepository.findByRoleName(anyString())).thenReturn(Optional.of(new Role("USER")));
 
         assertThatThrownBy(() -> userService.create(user))
                 .isInstanceOf(EmailAlreadyExistsException.class)
@@ -168,7 +164,6 @@ public class UserServiceTest {
         User user = new User();
         user.setUsername("username");
         when(userRepository.isUsernameExists(anyString())).thenReturn(true);
-        when(roleRepository.findByRoleName(anyString())).thenReturn(Optional.of(new Role("USER")));
 
         assertThatThrownBy(() -> userService.create(user))
                 .isInstanceOf(UsernameAlreadyExistsException.class)
@@ -287,19 +282,34 @@ public class UserServiceTest {
     }
 
     @Test
-    void shouldThrowIllegalArgumentExceptionWhenReadingByInvalidEmail() {
-        assertThatThrownBy(() -> userService.readByEmail(null))
-                .hasMessageContaining("Email cannot be null");
+    void shouldThrowIllegalArgumentExceptionWhenReadingByInvalidUsername() {
+        assertThatThrownBy(() -> userService.readByUsername(null))
+                .hasMessageContaining("Username cannot be null");
     }
 
     @Test
-    void shouldThrowEntityNotFoundExceptionWhenUsernameDoesntExist() {
+    void shouldReturnUserWithRolesWhenProvidedValidUsername(){
         String username = "username";
-        when(userRepository.findByUsername(username)).thenReturn(Optional.empty());
+        User user = new User();
+        Role roleUser = new Role("USER");
+        user.addRole(roleUser);
+        when(userRepository.findByUsernameWithRoles(username)).thenReturn(Optional.of(user));
 
-        assertThatThrownBy(() -> userService.readByUsername(username))
-                .isInstanceOf(EntityNotFoundException.class)
-                .hasMessageContaining("User with username: " + username + " doesn't exist");
+        User retrieved = userService.readUserWithRolesByUsername(username);
+
+        ArgumentCaptor<String> argCaptor =
+                ArgumentCaptor.forClass(String.class);
+        verify(userRepository).findByUsernameWithRoles(argCaptor.capture());
+
+        assertThat(argCaptor.getValue()).isEqualTo(username);
+        assertThat(retrieved).isEqualTo(user);
+        assertThat(retrieved.getRoles()).contains(roleUser);
+    }
+
+    @Test
+    void shouldThrowIllegalArgumentExceptionWhenReadingWithRolesByInvalidUsername() {
+        assertThatThrownBy(() -> userService.readUserWithRolesByUsername(null))
+                .hasMessageContaining("Username cannot be null");
     }
 
     @Test
@@ -321,9 +331,19 @@ public class UserServiceTest {
     }
 
     @Test
-    void shouldThrowIllegalArgumentExceptionWhenReadingByInvalidUsername() {
-        assertThatThrownBy(() -> userService.readByUsername(null))
-                .hasMessageContaining("Username cannot be null");
+    void shouldThrowIllegalArgumentExceptionWhenReadingByInvalidEmail() {
+        assertThatThrownBy(() -> userService.readByEmail(null))
+                .hasMessageContaining("Email cannot be null");
+    }
+
+    @Test
+    void shouldThrowEntityNotFoundExceptionWhenUsernameDoesntExist() {
+        String username = "username";
+        when(userRepository.findByUsername(username)).thenReturn(Optional.empty());
+
+        assertThatThrownBy(() -> userService.readByUsername(username))
+                .isInstanceOf(EntityNotFoundException.class)
+                .hasMessageContaining("User with username: " + username + " doesn't exist");
     }
 
     @Test

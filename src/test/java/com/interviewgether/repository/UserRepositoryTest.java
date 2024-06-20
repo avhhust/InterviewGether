@@ -1,5 +1,6 @@
 package com.interviewgether.repository;
 
+import com.interviewgether.model.Role;
 import com.interviewgether.model.User;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Test;
@@ -11,6 +12,8 @@ import static org.assertj.core.api.Assertions.assertThat;
 public class UserRepositoryTest {
     @Autowired
     private UserRepository userRepository;
+    @Autowired
+    private RoleRepository roleRepository;
 
     @AfterEach
     void tearDown() {
@@ -81,4 +84,20 @@ public class UserRepositoryTest {
         assertThat(founded).isEqualTo(user);
     }
 
+    @Test
+    void shouldReturnUserWithFetchedRolesByUsername() {
+        String username = "username";
+        User givenUser = new User();
+        givenUser.setUsername(username);
+        givenUser.setEmail("email@test.com");
+        givenUser.setPassword("password");
+        Role roleUser = roleRepository.save(new Role("USER"));
+        givenUser.addRole(roleUser);
+        userRepository.save(givenUser);
+
+        User retrieved = userRepository.findByUsernameWithRoles(username).orElse(new User());
+
+        assertThat(retrieved).isEqualTo(givenUser);
+        assertThat(retrieved.getRoles()).contains(roleUser);
+    }
 }

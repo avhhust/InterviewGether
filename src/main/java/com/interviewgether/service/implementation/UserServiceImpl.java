@@ -19,8 +19,6 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.util.Assert;
 
-import java.util.Optional;
-
 @Service
 public class UserServiceImpl implements UserService {
     private final UserRepository userRepository;
@@ -39,7 +37,6 @@ public class UserServiceImpl implements UserService {
     @Transactional
     public void create(User user) throws UserAlreadyExistsException {
         Assert.notNull(user, "User cannot be null");
-        setDefaultRole(user);
         if(userRepository.isEmailExists(user.getEmail())){
             throw new EmailAlreadyExistsException("Email already exists", "email");
         }
@@ -47,6 +44,7 @@ public class UserServiceImpl implements UserService {
             throw new UsernameAlreadyExistsException("Username already exists", "username");
         }
         try{
+            setDefaultRole(user);
             User persistedUser = userRepository.save(user);
             UserAccount account = userAccountService.create(persistedUser);
             persistedUser.setUserAccount(account);
@@ -111,6 +109,14 @@ public class UserServiceImpl implements UserService {
         Assert.notNull(username, "Username cannot be null");
         return userRepository
                 .findByUsername(username)
+                .orElseThrow(() -> new EntityNotFoundException("User with username: " + username + " doesn't exist"));
+    }
+
+    @Override
+    public User readUserWithRolesByUsername(String username){
+        Assert.notNull(username, "Username cannot be null");
+        return userRepository
+                .findByUsernameWithRoles(username)
                 .orElseThrow(() -> new EntityNotFoundException("User with username: " + username + " doesn't exist"));
     }
 }
