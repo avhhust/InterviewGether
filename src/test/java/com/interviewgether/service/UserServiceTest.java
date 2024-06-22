@@ -17,6 +17,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
+import java.nio.CharBuffer;
 import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -124,7 +125,7 @@ public class UserServiceTest {
 
         userService.create(userRegisterDTO);
 
-        verify(passwordEncoder, times(1)).encode(password);
+        verify(passwordEncoder, times(1)).encode(CharBuffer.wrap(password));
     }
 
     @Test

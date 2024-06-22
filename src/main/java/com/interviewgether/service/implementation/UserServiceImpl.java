@@ -19,6 +19,8 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.util.Assert;
 
+import java.nio.CharBuffer;
+
 @Service
 public class UserServiceImpl implements UserService {
     private final UserRepository userRepository;
@@ -63,8 +65,7 @@ public class UserServiceImpl implements UserService {
     @Override
     @Transactional
     public void create(UserRegisterDTO userRegisterDTO) {
-        String encodedPassword = passwordEncoder.encode(userRegisterDTO.getPassword());
-        userRegisterDTO.setPassword(encodedPassword);
+        userRegisterDTO.setPassword(passwordEncoder.encode(CharBuffer.wrap(userRegisterDTO.getPassword())));
         create(UserTransformer.convertToUser(userRegisterDTO));
     }
 
