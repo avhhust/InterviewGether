@@ -1,8 +1,11 @@
-import axios from "axios";
+import axios from 'axios';
+
+
+export const BASE_URL = 'http://localhost:8080/api/v1';
 
 // Sets up base URL for all requests
-const api = axios.create({
-    baseURL: 'http://localhost:8080/api/v1'
+export const api = axios.create({
+    baseURL: BASE_URL
 });
 
 // Interceptor to include JWT token stored in browser for all outgoing HTTP requests
@@ -16,5 +19,3 @@ const api = axios.create({
 //     }
 //     return config;
 // });
-
-export default api;

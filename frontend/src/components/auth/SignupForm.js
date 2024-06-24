@@ -1,9 +1,9 @@
 import React, { useState }  from "react";
 import InputField from "../common/InputField.js";
 import TextWithLines from "../common/TextWithLines.js"
+import SocialAuthButtons from "../common/SocialAuthButtons.js";
 import { Link, useNavigate } from "react-router-dom";
-import api from "../../auth/server-api.js";
-
+import {api} from '../../utils/server-api.js';
 
 const initialState = { email: [], username: [], password: [] }
 
@@ -94,23 +94,12 @@ const SignupForm = () => {
         try {
             setIsLoading(true); 
             const response = await api.post('/auth/signup', userData);
-
-
             alert(JSON.stringify(response));
-
-
             console.log(response);
             navigate("/home"); // redirect to home page after successful registration
         } catch (error) {
             // Request reached server but server responded with an error
             if(error.response){
-
-
-
-                alert("Server response: " + JSON.stringify(error));
-
-
-
                 if(error.response.data.details){
                     const details = error.response.data.details;
                     // iterate over exception details which contains 
@@ -120,26 +109,16 @@ const SignupForm = () => {
                 }
                 console.error(error.response);
             }
-            // Request reached server but no response was recieved  
             else if(error.request){
-                // ToDo: implemenet logic 
-
-
-                alert("No response from the server");
-
-
-                // ... logic for 
+                // Request reached server but no response was recieved  
+                // Implement logic for the case when server didn't respond
+                console.error("No response from the server");
             }
-            // Request didn't reach server
             else {
+                // Request didn't reach server
                 // ToDo: implemenet logic
                 // ... logic for displaying network error
-
-
-                alert("Couldn't reach out to the server");
-
-
-
+                console.error("Couldn't reach out to the server");
                 console.error(error);
             }
         } finally{
@@ -184,8 +163,7 @@ const SignupForm = () => {
                 </div>
             </form>
             <TextWithLines text="or"/>
-            <button id="google" className="bar">Signup with Google</button>
-            <button id="github" className="bar">Signup with GitHub</button>
+            <SocialAuthButtons/>
             <div className="agreement">
                 <p>By signing up, you agree to our <Link to={"/"}>Terms of Service</Link> and <Link to={"/"}>Privacy Policy</Link></p>
             </div>

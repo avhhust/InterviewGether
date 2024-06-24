@@ -1,11 +1,12 @@
 .home_container{
     position: relative;
-    top: 60px;
 }
 
 .greeting{
+    height: 100vh;
     display: flex;
     justify-content: center;
+    align-items: center;
 }
 
 @media (min-width: 1900px) {

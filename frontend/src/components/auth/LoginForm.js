@@ -1,8 +1,9 @@
 import React, { useState } from "react";
 import InputField from "../common/InputField.js";
 import TextWithLines from "../common/TextWithLines.js";
-import { Link } from "react-router-dom";
-import api from "../../auth/server-api.js";
+import SocialAuthButtons from "../common/SocialAuthButtons.js";
+import { Link, useNavigate } from "react-router-dom";
+import {api} from '../../utils/server-api.js';
 
 const LoginForm = () => {
     const[userData, setUserData] = useState({
@@ -13,6 +14,7 @@ const LoginForm = () => {
         email: [], username: [], password: []
     });
     const [isLoading, setIsLoading] = useState(false);
+    const navigate = useNavigate();
 
 
     const validateField = (field) => {
@@ -50,7 +52,7 @@ const LoginForm = () => {
         try{
             setIsLoading(true);
             await api.post('/auth/login', userData);
-            
+            navigate('/home');
         } catch(error){
             console.error(error);
         } finally {
@@ -86,8 +88,7 @@ const LoginForm = () => {
                 </div>
             </form>
             <TextWithLines text="or"/>
-            <button id="google" className="bar">Login with Google</button>
-            <button id="github" className="bar">Login with GitHub</button>
+            <SocialAuthButtons/>
         </div>
     );
 }
