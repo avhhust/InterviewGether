@@ -1,6 +1,5 @@
 package com.interviewgether.service.implementation;
 
-import com.interviewgether.model.User;
 import com.interviewgether.model.UserAccount;
 import com.interviewgether.repository.UserAccountRepository;
 import com.interviewgether.service.UserAccountService;
@@ -20,10 +19,9 @@ public class UserAccountServiceImpl implements UserAccountService {
     }
 
     @Override
-    public UserAccount create(User user) {
-        Assert.notNull(user, "User must not be null");
+    public UserAccount create(long userId) {
         UserAccount userAccount = new UserAccount();
-        userAccount.setUser(user);
+        userAccount.setUserId(userId);
         userAccount.setCreatedAt(OffsetDateTime.now());
         return userAccountRepository.save(userAccount);
     }
@@ -34,7 +32,6 @@ public class UserAccountServiceImpl implements UserAccountService {
                 .orElseThrow(() -> new EntityNotFoundException("UserAccount with id " + id + " is not found"));
     }
 
-    // ToDo: Later change parameters to id(or username) and DTO ...
     @Override
     public UserAccount update(UserAccount userAccount) {
         Assert.notNull(userAccount, "UserAccount must not be null");
@@ -47,11 +44,9 @@ public class UserAccountServiceImpl implements UserAccountService {
         userAccountRepository.deleteById(id);
     }
 
+    // ToDo: implement readByUserId
     @Override
-    public UserAccount readByUser(User user) {
-        Assert.notNull(user, "User must not be null");
-        return readById(user.getUserId());
+    public UserAccount readByUserId(long userId) {
+        return null;
     }
-
-
 }

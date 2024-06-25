@@ -16,7 +16,7 @@ public class UserAccount {
 //    @OneToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
 //    @JoinColumn(name = "user_id")
     @Column(name = "user_id")
-    private Integer userId;
+    private long userId;
 
     @Column(name = "profile_picture_url")
     private String profilePictureUrl;
@@ -60,24 +60,16 @@ public class UserAccount {
     public UserAccount() {
     }
 
-    public UserAccount(Integer userId) {
+    public UserAccount(long userId) {
         this.userId = userId;
     }
 
-    public Long getId() {
-        return id;
+    public long getUserId() {
+        return userId;
     }
 
-    public void setId(Long id) {
-        this.id = id;
-    }
-
-    public User getUser() {
-        return user;
-    }
-
-    public void setUser(User user) {
-        this.user = user;
+    public void setUserId(long userId) {
+        this.userId = userId;
     }
 
     public String getProfilePictureUrl() {
@@ -88,11 +80,11 @@ public class UserAccount {
         this.profilePictureUrl = profilePictureUrl;
     }
 
-    public int getNumberCompletedMocks() {
+    public Integer getNumberCompletedMocks() {
         return numberCompletedMocks;
     }
 
-    public void setNumberCompletedMocks(int numberCompletedMocks) {
+    public void setNumberCompletedMocks(Integer numberCompletedMocks) {
         this.numberCompletedMocks = numberCompletedMocks;
     }
 
