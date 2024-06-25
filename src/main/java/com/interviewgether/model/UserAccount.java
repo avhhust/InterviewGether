@@ -3,11 +3,7 @@ package com.interviewgether.model;
 import com.interviewgether.model.embeddable.SocialNetwork;
 import com.interviewgether.model.enums.ProficiencyLevel;
 import jakarta.persistence.*;
-import jakarta.validation.constraints.Min;
-import jakarta.validation.constraints.NotNull;
-import org.hibernate.annotations.CreationTimestamp;
 
-import java.time.Instant;
 import java.time.OffsetDateTime;
 import java.util.*;
 
@@ -16,12 +12,11 @@ public class UserAccount {
 
     @Id
     private Long id;
-
-    // Allows UserAccount share the same ID with User. So user_id becomes primary key for UserAccount
-    @MapsId
-    @OneToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-    @JoinColumn(name = "user_id")
-    private User user;
+//    @MapsId
+//    @OneToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+//    @JoinColumn(name = "user_id")
+    @Column(name = "user_id")
+    private Integer userId;
 
     @Column(name = "profile_picture_url")
     private String profilePictureUrl;
@@ -63,11 +58,10 @@ public class UserAccount {
     private OffsetDateTime createdAt;
 
     public UserAccount() {
-
     }
 
-    public UserAccount(User user) {
-        this.user = user;
+    public UserAccount(Integer userId) {
+        this.userId = userId;
     }
 
     public Long getId() {
@@ -163,11 +157,15 @@ public class UserAccount {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         UserAccount that = (UserAccount) o;
-        return Objects.equals(user, that.user) && Objects.equals(profilePictureUrl, that.profilePictureUrl) && Objects.equals(numberCompletedMocks, that.numberCompletedMocks) && proficiencyLevel == that.proficiencyLevel && Objects.equals(createdAt, that.createdAt);
+        return Objects.equals(userId, that.userId) &&
+                Objects.equals(profilePictureUrl, that.profilePictureUrl) &&
+                Objects.equals(numberCompletedMocks, that.numberCompletedMocks) &&
+                proficiencyLevel == that.proficiencyLevel &&
+                Objects.equals(createdAt, that.createdAt);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(user, profilePictureUrl, numberCompletedMocks, proficiencyLevel, createdAt);
+        return Objects.hash(userId, profilePictureUrl, numberCompletedMocks, proficiencyLevel, createdAt);
     }
 }
