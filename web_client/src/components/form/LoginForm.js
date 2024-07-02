@@ -3,7 +3,7 @@ import InputField from "../common/InputField.js";
 import TextWithLines from "../common/TextWithLines.js";
 import SocialAuthButtons from "../common/SocialAuthButtons.js";
 import { Link, useNavigate } from "react-router-dom";
-import {authenticate} from '../../api/APIUtils.js'
+import * as authAPI from '../../api/authApi.js'
 
 const LoginForm = () => {
     const[userData, setUserData] = useState({
@@ -51,7 +51,7 @@ const LoginForm = () => {
         if(!isFormValid()) return;
         try{
             setIsLoading(true);
-            authenticate(userData);
+            authAPI.authenticate(userData);
             navigate('/home');
         } catch(error){
             console.error(error);

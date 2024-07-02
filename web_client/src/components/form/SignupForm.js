@@ -3,7 +3,7 @@ import InputField from "../common/InputField.js";
 import TextWithLines from "../common/TextWithLines.js"
 import SocialAuthButtons from "../common/SocialAuthButtons.js";
 import { Link, useNavigate } from "react-router-dom";
-import {register} from '../../api/APIUtils.js'
+import * as authApi from '../../api/authApi.js'
 
 const initialState = { email: [], username: [], password: [] }
 
@@ -13,7 +13,6 @@ const SignupForm = () => {
     });
     const [errors, setErrors] = useState(initialState); // used to store error messages that are displayed under the input field
     const [isLoading, setIsLoading] = useState(false); // used to prevent accidental multiple submittions
-
     const navigate = useNavigate();
 
     const validateField = (field) => {
@@ -84,7 +83,7 @@ const SignupForm = () => {
         e.preventDefault();
         if(!isFormValid()) return;
         setIsLoading(true); 
-        const response = await register(userData);
+        const response = await authApi.register(userData);
         if(response.status === 200){
             navigate("/login"); 
         } else {
