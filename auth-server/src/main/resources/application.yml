@@ -1,0 +1,36 @@
+server:
+  port: 9090
+
+spring:
+  application:
+    name: auth-server
+  datasource:
+    url: jdbc:postgresql:${DATASOURCE_URL}
+    username: ${DATASOURCE_USER}
+    password: ${DATASOURCE_PASSWORD}
+  jpa:
+    hibernate:
+      ddl-auto: update
+    properties:
+      hibernate:
+        format_sql=true:
+    show-sql: true
+
+  security:
+    oauth2:
+      client:
+        registration:
+          github:
+            client-id: Ov23liqEff2zIVvS3fSE
+            client-secret: c58d3a4e470d244e0888d46ec95b3a7737b0ffb1
+
+logging:
+  level:
+    org:
+      springframework:
+        security: TRACE
+
+
+
+#spring.security.oauth2.client.registration.google.client-id=
+#spring.security.oauth2.client.registration.google.client-secret=
