@@ -1,11 +1,11 @@
 import React from 'react';
-import { BASE_URL } from '../../utils/server-api';
+// import {  } from '../../utils/apiUtils.js';
 
 
 const SocialAuthButtons = () => {
 
     const handleClick = ({target}) => {
-        window.location.href = BASE_URL + "/oauth2/authorization/" + target.id;
+        // window.location.href = BASE_URL + "/oauth2/authorization/" + target.id;
     }
 
     return (
