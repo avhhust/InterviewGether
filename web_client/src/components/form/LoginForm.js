@@ -84,7 +84,7 @@ const LoginForm = () => {
                 />
                 <div>
                     <button className="bar" type={"submit"} id={"auth_btn"} disabled={isLoading}>Log In</button>
-                    <p>Don't have an account? <Link to={"/signup"}>Sign up</Link></p>
+                    <p>Don't have an account? <Link to={"/register"}>Sign up</Link></p>
                 </div>
             </form>
             <TextWithLines text="or"/>

@@ -1,26 +1,13 @@
-import axios from 'axios';
+import { axiosInstance } from './axiosService';
 
 const BASE_URL = 'http://localhost:9090';
-
-// Sets up base URL for all requests
-const axiosInstance = axios.create();
-
-axiosInstance.interceptors.response.use(
-    response => response,
-    error => {
-        if(error.response.status === 401){
-            // ToDo: navigate to login page
-        }
-        return Promise.reject(error);
-    }
-)
 
 const handleApiError = async (error) => {
     if(error.response){
         return {
             message: error.response.data.message,
             status: error.response.status,
-            errors: error.response.data.details || {}
+            details: error.response.data.details || {}
         }
     } else if(error.request){
         return { message: 'No response received from server', status: null};
@@ -29,21 +16,21 @@ const handleApiError = async (error) => {
     }
 }
 
-export const post = async (url, payload) => {
+export const post = async (url, body) => {
     return axiosInstance
-            .post(BASE_URL + url, payload)
+            .post(BASE_URL + url, body)
             .catch(handleApiError);
 }
 
-export const register = async (payload) => {
+export const register = async (body) => {
     return axiosInstance
-            .post(BASE_URL + '/register', payload)
+            .post(BASE_URL + '/auth/register', body)
             .catch(handleApiError);
 }
 
-export const authenticate = async (payload) => {
+export const authenticate = async (body) => {
     return axiosInstance.
-            post(BASE_URL + '/login', payload)
+            post(BASE_URL + '/auth/login', body)
             .catch
 }
 

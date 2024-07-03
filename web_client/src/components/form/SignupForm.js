@@ -84,12 +84,13 @@ const SignupForm = () => {
         if(!isFormValid()) return;
         setIsLoading(true); 
         const response = await authApi.register(userData);
-        if(response.status === 200){
+        if(response.status === 201){
             navigate("/login"); 
         } else {
-            if(response.errors){
-                for(const field in errors){
-                    setErrors(prevErrors => ({...prevErrors, [field]: [errors[field]]}));
+            if(response){
+                const details = response.details;
+                for(const field in details){
+                    setErrors(prevErrors => ({...prevErrors, [field]: [details[field]]}));
                 }
             }
         }

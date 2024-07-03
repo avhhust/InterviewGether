@@ -12,7 +12,7 @@ import LoginPage from './routes/LoginPage';
 import HomePage from './routes/HomePage';
 import SignupPage from './routes/SignupPage';
 
-const router = createBrowserRouter([
+export const router = createBrowserRouter([
   {
     path: '/',
     element: <Root/>,

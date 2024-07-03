@@ -1,11 +1,19 @@
-import React from 'react';
+import React, {useEffect, useState} from 'react';
+import * as resApi from '../api/resourceApi';
 
 const HomePage = () => {
 
-  // const[greeting, setGreeting] = useState('Welcome to InterviewGether!');
+  const[greeting, setGreeting] = useState('Welcome to InterviewGether!');
+
+  useEffect(() => {
+    const fetchData = async () => {
+      const response = await resApi.getHomeInfo();
+      setGreeting(response.data);
+    }
+  }, []);
 
   return (
-    <p className='greeting'></p>
+    <p className='greeting'>{greeting}</p>
   );
 }
 
