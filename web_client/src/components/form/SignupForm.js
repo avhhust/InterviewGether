@@ -3,22 +3,20 @@ import InputField from "../common/InputField.js";
 import TextWithLines from "../common/TextWithLines.js"
 import SocialAuthButtons from "../common/SocialAuthButtons.js";
 import { Link, useNavigate } from "react-router-dom";
-import {api} from '../../utils/server-api.js';
+import * as authApi from '../../api/authApi.js'
 
 const initialState = { email: [], username: [], password: [] }
 
 const SignupForm = () => {    
-    const [userData, setUserData] = useState({
-        email: "test@gmail.com", username: "test", password: "Test123123"
-    }); // stores user input data from the form
+    const [userData, setUserData] = useState({  // stores user input data from the form
+        email: "test@gmail.com", username: "test", password: "Test123123" 
+    });
     const [errors, setErrors] = useState(initialState); // used to store error messages that are displayed under the input field
-    // const [hints, setHints] = useState(initialState);
     const [isLoading, setIsLoading] = useState(false); // used to prevent accidental multiple submittions
-
     const navigate = useNavigate();
 
-    // preforms validation for only one field and sets error message for that field to be displayed
     const validateField = (field) => {
+        // preforms validation for only one field and sets error message for that field to be displayed
         const value = userData[field];
         const errorMessages = [];
         if(!value){
@@ -49,15 +47,12 @@ const SignupForm = () => {
         return errorMessages.length === 0;
     }
 
-    // perform validation for each field and returns true/false
     const isFormValid = () => {
         let isValid = true;
         for(const field in userData){
-            // check if error already exists to skip unnecessary validation
             if(errors[field].length !== 0){
                 isValid = false;
-            } 
-            // if there are no errors then validate  
+            }
             else if(!validateField(field)){
                 isValid = false;
             }
@@ -74,7 +69,6 @@ const SignupForm = () => {
 
     // fucntion dedicated for password input to handle real time validaton 
     const handlePasswordInput = (e) => {
-        // extra logic for validating while users typing in password
         // ...  
         handleInput(e);
     }
@@ -85,45 +79,22 @@ const SignupForm = () => {
         validateField(target.name);
     }
 
-    // Implements custom logic for submiting form
     const handleSubmit = async (e) => {
         e.preventDefault();
-        // perform validation and if any field is failed then exit function
-        // to prevent form submit while there are errors
         if(!isFormValid()) return;
-        try {
-            setIsLoading(true); 
-            const response = await api.post('/auth/signup', userData);
-            alert(JSON.stringify(response));
-            console.log(response);
-            navigate("/home"); // redirect to home page after successful registration
-        } catch (error) {
-            // Request reached server but server responded with an error
-            if(error.response){
-                if(error.response.data.details){
-                    const details = error.response.data.details;
-                    // iterate over exception details which contains 
-                    for(const field in details){
-                        setErrors(prevErrors => ({...prevErrors, [field]: [details[field]]}));
-                    }
+        setIsLoading(true); 
+        const response = await authApi.register(userData);
+        if(response.status === 201){
+            navigate("/login"); 
+        } else {
+            if(response){
+                const details = response.details;
+                for(const field in details){
+                    setErrors(prevErrors => ({...prevErrors, [field]: [details[field]]}));
                 }
-                console.error(error.response);
             }
-            else if(error.request){
-                // Request reached server but no response was recieved  
-                // Implement logic for the case when server didn't respond
-                console.error("No response from the server");
-            }
-            else {
-                // Request didn't reach server
-                // ToDo: implemenet logic
-                // ... logic for displaying network error
-                console.error("Couldn't reach out to the server");
-                console.error(error);
-            }
-        } finally{
-            setIsLoading(false);
-        } 
+        }
+        setIsLoading(false);
     };
 
     return(

@@ -4,9 +4,7 @@ import { Link } from "react-router-dom";
 import { ProfileIcon } from './ProfileIcon';
 import { AppLogo } from './AppLogo';
 
-
-
-export const Navbar = () => {
+const Navbar = () => {
   const isMobile = useMediaQuery({maxWidth: 767});
   const [isUserAuthenticated, setIsUserAuthenticated] = useState(false);
   
@@ -17,7 +15,7 @@ export const Navbar = () => {
   const authButtons = (
     <>
       <Link to={"/login"} id='login_btn'>Login</Link>
-      <Link to={"/signup"} id='signup_btn'>Sign Up</Link>
+      <Link to={"/register"} id='signup_btn'>Sign Up</Link>
     </>
   );
 
@@ -28,7 +26,7 @@ export const Navbar = () => {
   const links = [
     {path: "/home", label: "Home"},
     {path: "/about", label: "About"},
-    {path: "/contact", label: "Contact"}
+    {path: "/contacts", label: "Contacts"}
   ]
 
   const desktopVersion = (
@@ -61,3 +59,5 @@ export const Navbar = () => {
     </div>
   );
 }
+
+export default Navbar;

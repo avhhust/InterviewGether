@@ -3,7 +3,7 @@ import InputField from "../common/InputField.js";
 import TextWithLines from "../common/TextWithLines.js";
 import SocialAuthButtons from "../common/SocialAuthButtons.js";
 import { Link, useNavigate } from "react-router-dom";
-import {api} from '../../utils/server-api.js';
+import * as authAPI from '../../api/authApi.js'
 
 const LoginForm = () => {
     const[userData, setUserData] = useState({
@@ -51,7 +51,7 @@ const LoginForm = () => {
         if(!isFormValid()) return;
         try{
             setIsLoading(true);
-            await api.post('/auth/login', userData);
+            authAPI.authenticate(userData);
             navigate('/home');
         } catch(error){
             console.error(error);
@@ -84,7 +84,7 @@ const LoginForm = () => {
                 />
                 <div>
                     <button className="bar" type={"submit"} id={"auth_btn"} disabled={isLoading}>Log In</button>
-                    <p>Don't have an account? <Link to={"/signup"}>Sign up</Link></p>
+                    <p>Don't have an account? <Link to={"/register"}>Sign up</Link></p>
                 </div>
             </form>
             <TextWithLines text="or"/>
