@@ -13,16 +13,13 @@ import org.springframework.http.MediaType;
 import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
-import org.springframework.security.oauth2.core.AuthorizationGrantType;
-import org.springframework.security.oauth2.core.oidc.OidcScopes;
+import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.oauth2.jwt.JwtDecoder;
-import org.springframework.security.oauth2.server.authorization.client.InMemoryRegisteredClientRepository;
-import org.springframework.security.oauth2.server.authorization.client.RegisteredClient;
-import org.springframework.security.oauth2.server.authorization.client.RegisteredClientRepository;
 import org.springframework.security.oauth2.server.authorization.config.annotation.web.configuration.OAuth2AuthorizationServerConfiguration;
 import org.springframework.security.oauth2.server.authorization.config.annotation.web.configurers.OAuth2AuthorizationServerConfigurer;
 import org.springframework.security.oauth2.server.authorization.settings.AuthorizationServerSettings;
-import org.springframework.security.oauth2.server.authorization.settings.ClientSettings;
+import org.springframework.security.oauth2.server.authorization.token.JwtEncodingContext;
+import org.springframework.security.oauth2.server.authorization.token.OAuth2TokenCustomizer;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.LoginUrlAuthenticationEntryPoint;
 import org.springframework.security.web.util.matcher.MediaTypeRequestMatcher;
@@ -41,42 +38,29 @@ public class AuthServerConfig {
     public SecurityFilterChain authServerSecurityFilterChain(HttpSecurity http) throws Exception{
         OAuth2AuthorizationServerConfiguration.applyDefaultSecurity(http);
         http.getConfigurer(OAuth2AuthorizationServerConfigurer.class)
-                .oidc(Customizer.withDefaults());
-        // *** When user is unauthenticated it REDIRECTS user to login page. This will not always happen with authorize requests
-        http.exceptionHandling(
+                .oidc(Customizer.withDefaults()); // enables openid connect
+        http.exceptionHandling( // handles unauthorized exceptions by redirecting to login page
                 c -> c.defaultAuthenticationEntryPointFor(
                         new LoginUrlAuthenticationEntryPoint("/login"),
                         new MediaTypeRequestMatcher(MediaType.TEXT_HTML)
                 )
         );
-        http.cors(Customizer.withDefaults());
         return http.build();
     }
 
     //Decided not to store clients in the database but specify them explicitly, since there is only one client so far
     @Bean
-    public RegisteredClientRepository registeredClientRepository() {
-        RegisteredClient reactClient = RegisteredClient.withId(UUID.randomUUID().toString())
-                .clientId("react-client")
-//                .clientSecret("{noop}web-client-secret")
-                .authorizationGrantType(AuthorizationGrantType.AUTHORIZATION_CODE)
-                .authorizationGrantType(AuthorizationGrantType.REFRESH_TOKEN)
-//                .clientAuthenticationMethod(ClientAuthenticationMethod.CLIENT_SECRET_BASIC) // For confidential client only
-                .redirectUri("http://127.0.0.1:3000/authorized")
-//                .postLogoutRedirectUri() //
-                .scope(OidcScopes.OPENID)
-                .scope(OidcScopes.PROFILE)
-                .clientSettings(ClientSettings.builder()
-                        .requireAuthorizationConsent(true)
-                        .requireProofKey(false) // change to true for using with public clients to enable PKCE
-                        .build()
-                )
-                .build();
-        return new InMemoryRegisteredClientRepository(reactClient);
+    public AuthorizationServerSettings authServerSettings(){
+        return AuthorizationServerSettings.builder().build();
     }
 
     @Bean
-    public JWKSource<SecurityContext> jwkSource(){
+    public JwtDecoder jwtDecoder(JWKSource<SecurityContext> jwkSource) {
+        return OAuth2AuthorizationServerConfiguration.jwtDecoder(jwkSource);
+    }
+
+    @Bean
+    public JWKSource<SecurityContext> jwkSource(){ // generates and stores JWKs in memory
         KeyPair keyPair = generateRsaKey();
         RSAPublicKey publicKey = (RSAPublicKey) keyPair.getPublic();
         RSAPrivateKey privateKey = (RSAPrivateKey) keyPair.getPrivate();
@@ -86,7 +70,7 @@ public class AuthServerConfig {
                 .build();
         JWKSet jwkSet = new JWKSet(rsaKey);
         return new ImmutableJWKSet<>(jwkSet);
-     }
+    }
 
     private static KeyPair generateRsaKey() {
         KeyPair keyPair;
@@ -102,13 +86,12 @@ public class AuthServerConfig {
     }
 
     @Bean
-    public JwtDecoder jwtDecoder(JWKSource<SecurityContext> jwkSource) {
-        return OAuth2AuthorizationServerConfiguration.jwtDecoder(jwkSource);
-    }
-
-    @Bean
-    public AuthorizationServerSettings authServerSettings(){
-        // Customize auth server endpoints
-        return AuthorizationServerSettings.builder().build();
+    public OAuth2TokenCustomizer<JwtEncodingContext> oAuth2TokenCustomizer(){ // Adds custom claims to the token payload
+        return context -> {
+                var authorities = context.getPrincipal().getAuthorities(); //
+                context.getClaims().claim(
+                        "authorities", authorities.stream().map(GrantedAuthority::getAuthority).toList()
+                );
+        };
     }
 }

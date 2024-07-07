@@ -1,36 +1,49 @@
 server:
   port: 9090
 
-spring:
-  application:
+spring.application:
     name: auth-server
-  datasource:
+
+spring.datasource:
     url: jdbc:postgresql:${DATASOURCE_URL}
     username: ${DATASOURCE_USER}
     password: ${DATASOURCE_PASSWORD}
-  jpa:
-    hibernate:
-      ddl-auto: update
-    properties:
-      hibernate:
-        format_sql=true:
-    show-sql: true
 
-  security:
+spring.jpa:
+  hibernate:
+      ddl-auto: update
+  properties:
+      hibernate:
+        format_sql: true
+  show-sql: true
+
+spring.security:
     oauth2:
+      authorizationserver.client:
+        gateway:
+          registration:
+            client-id: "gateway-client"
+            client-secret: "$2a$10$MJBgVvTA6m72lXb5qroMjulTwEKRtmtv9X3gNr9TpPJXtrW/bZ4BG"
+            client-authentication-methods:
+              - client_secret_basic
+            redirect-uris:
+              - "http://gateway:8000/login/oauth2/code/client"
+            authorization-grant-types:
+              - authorization_code
+              - refresh_token
+            scopes:
+              - openid
+              - profile
+          require-authorization-consent: true
+          require-proof-key: true
+
       client:
         registration:
           github:
-            client-id: Ov23liqEff2zIVvS3fSE
-            client-secret: c58d3a4e470d244e0888d46ec95b3a7737b0ffb1
+            client-id: ${GITHUB_CLIENT_ID}
+            client-secret: ${GITHUB_CLIENT_SECRET}
 
-logging:
-  level:
-    org:
-      springframework:
-        security: TRACE
+logging.level:
+    org.springframework.security: TRACE
 
-
-
-#spring.security.oauth2.client.registration.google.client-id=
-#spring.security.oauth2.client.registration.google.client-secret=
+# ToDo: Move secrets to secret.yml file later

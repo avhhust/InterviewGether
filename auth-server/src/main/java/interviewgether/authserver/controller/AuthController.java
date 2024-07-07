@@ -30,7 +30,7 @@ public class AuthController {
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
-    @PostMapping("/signup")
+    @PostMapping("/register")
     public ResponseEntity<?> signup(@RequestBody @Valid UserRegisterDTO userRegisterDTO){
         userService.create(userRegisterDTO);
         return new ResponseEntity<>(HttpStatus.CREATED);
