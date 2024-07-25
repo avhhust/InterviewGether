@@ -1,0 +1,18 @@
+.not_foud_container{
+    padding-top: 100px;
+    display: flex;
+    justify-content: center;
+    height: 150px;
+}
+
+.not_foud_container .wrapper {
+    max-width: 420px;
+
+    h1{
+        font-size: 45px;
+    }
+
+    a{
+        margin-top: 10px;
+    }
+}

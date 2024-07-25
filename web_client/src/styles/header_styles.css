@@ -1,78 +1,55 @@
 .navbar_container{
-    position: fixed;
-    top: 0;
-    right: 0;
-    left: 0;
-    z-index: 999;
-
-    height: 10vh;
+    height: 60px;
     max-height: 70px;
+    min-height: 40px;
     display: flex;
     justify-content: center;
-
-    box-shadow: 0px 7px 10px -8px rgba(0,0,0,0.70);
     background-color: white;
 }
 
 .navbar{
+    width: 1300px;
     height: 100%;
-    width: 100%;
-    margin: 0 20px;
     display: flex;
     align-items: center;
+    justify-content: space-between;
 }
 
 .navbar{ 
-    * {
-        display: flex;
-        flex-direction: row;
-        justify-content: center;
-        align-items: center;
-        color: black;
-    }
-    
-    > *{
-        margin: 0 5px; 
-    }
-
     .app-name{
         font-size: 20px;
+        width: 100%;
     }
 
-    .refers{
+    .menu{}
+
+    .links{
         padding: 0;
-        margin-left: auto;
+        display: flex;
     }
 
-    .refers li{
-        margin: 0 15px;
+    .links li{
         list-style: none;
     }
+    
+    .links li:not(:last-child){
+        margin-right: 15px;
+    }
 
-    .refers li a:hover{
+    .links li a:hover{
         font-weight: bold;
         text-shadow: 8px 4px 4px rgba(0, 0, 0, 0.3);
         transition: all 0.2s ease-in-out;
         font-weight: bold;
     }
+
+    .slide_menu{
+
+    }
     
-    #login_btn, #signup_btn{
+    #signin_btn{
         min-width: 80px;
-        height: 55%;
         aspect-ratio: 2/1;
-        border-radius: 50px;
-        text-wrap: nowrap;
-    }
-    
-    #signup_btn{
-        color: white;
-        background-color: #1d3e5bec;
-    }
-    
-    #login_btn{
-        color: #737373;
-        
-        border: 1.5px solid #d6d6d6;
     }
     
     .profile-icon{

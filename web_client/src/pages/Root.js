@@ -1,14 +1,16 @@
 import React from "react";
-import Navbar from "../components/common/Navbar"
+import Header from "../components/ui/Header"
 import { Outlet } from "react-router-dom";
+import Footer from "../components/ui/Footer";
 
 const Root = () => {
     return (
         <div className="main_container">
-            <Navbar/>
-            <div className="container">
-                <Outlet/>
+            <Header/>
+            <div className="page">
+                <Outlet/>            
             </div>
+            <Footer/>
         </div>
     );
 }
