@@ -4,17 +4,11 @@ server:
 spring.application:
     name: auth-server
 
-spring.datasource:
-    url: jdbc:postgresql:${DATASOURCE_URL}
-    username: ${DATASOURCE_USER}
-    password: ${DATASOURCE_PASSWORD}
-
 spring.jpa:
   hibernate:
-      ddl-auto: update
+    ddl-auto: update
   properties:
-      hibernate:
-        format_sql: true
+      hibernate.format_sql: true
   show-sql: true
 
 spring.security:
