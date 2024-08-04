@@ -1,8 +1,11 @@
 package interviewgether.authserver.exception.DAL;
 
 public class EmailAlreadyExistsException extends UserAlreadyExistsException {
-
-    public EmailAlreadyExistsException(String message, String causeFieldName) {
-        super(message, causeFieldName);
+    private static final String causedBy = "email";
+    public EmailAlreadyExistsException(){
+        super(causedBy);
+    }
+    public EmailAlreadyExistsException(String message) {
+        super(message, causedBy);
     }
 }

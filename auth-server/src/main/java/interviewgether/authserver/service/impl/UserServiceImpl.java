@@ -2,9 +2,7 @@ package interviewgether.authserver.service.impl;
 
 import interviewgether.authserver.dto.UserTransformer;
 import interviewgether.authserver.dto.UserRegisterDTO;
-import interviewgether.authserver.exception.DAL.EmailAlreadyExistsException;
-import interviewgether.authserver.exception.DAL.UserAlreadyExistsException;
-import interviewgether.authserver.exception.DAL.UsernameAlreadyExistsException;
+import interviewgether.authserver.exception.DAL.*;
 import interviewgether.authserver.model.AuthUser;
 import interviewgether.authserver.model.Role;
 import interviewgether.authserver.repository.RoleRepository;
@@ -34,27 +32,26 @@ public class UserServiceImpl implements UserService {
     @Override
     @Transactional
     public void create(AuthUser authUser) throws UserAlreadyExistsException {
-        Assert.notNull(authUser, "AuthUser cannot be null");
+        Assert.notNull(authUser, "User cannot be null");
         if(userRepository.isEmailExists(authUser.getEmail())){
-            throw new EmailAlreadyExistsException("Email already exists", "email");
+            throw new EmailAlreadyExistsException("Email already exists");
         }
         if(userRepository.isUsernameExists(authUser.getUsername())){
-            throw new UsernameAlreadyExistsException("Username already exists", "username");
+            throw new UsernameAlreadyExistsException("Username already exists");
         }
         try{
             setDefaultRole(authUser);
-            AuthUser persistedAuthUser = userRepository.save(authUser);
-//            UserAccount account = userAccountService.create(persistedAuthUser);
-//            persistedAuthUser.setUserAccount(account);
+            AuthUser persistedUser = userRepository.save(authUser);
+
         } catch (DataIntegrityViolationException e){
             // ToDo: Review later
             String errorMessage = e.getMostSpecificCause().getMessage();
             if(errorMessage.contains("username"))
-                throw new UsernameAlreadyExistsException("Username already exists", "username");
+                throw new UsernameAlreadyExistsException("Username already exists");
             else if (errorMessage.contains("email"))
-                throw new EmailAlreadyExistsException("Email already exists", "email");
+                throw new EmailAlreadyExistsException("Email already exists");
             else
-                throw new UserAlreadyExistsException("AuthUser already exists");
+                throw new UserAlreadyExistsException("User already exists");
         }
     }
 
@@ -77,12 +74,12 @@ public class UserServiceImpl implements UserService {
     public AuthUser readById(long id) {
         return userRepository
                 .findById(id)
-                .orElseThrow(() -> new EntityNotFoundException("AuthUser with id " + id + " doesn't exist"));
+                .orElseThrow(() -> new EntityNotFoundException("User with id " + id + " doesn't exist"));
     }
 
     @Override
     public AuthUser update(AuthUser updatedAuthUser) {
-        Assert.notNull(updatedAuthUser, "AuthUser cannot be null");
+        Assert.notNull(updatedAuthUser, "User cannot be null");
         readById(updatedAuthUser.getUserId());
         return userRepository.save(updatedAuthUser);
     }
@@ -98,7 +95,7 @@ public class UserServiceImpl implements UserService {
         Assert.notNull(email, "Email cannot be null");
         return userRepository
                 .findByEmail(email)
-                .orElseThrow(() -> new EntityNotFoundException("AuthUser with email: " + email + " doesn't exist"));
+                .orElseThrow(() -> new EmailNotFoundException("User with email: " + email + " doesn't exist"));
     }
 
     @Override
@@ -106,7 +103,7 @@ public class UserServiceImpl implements UserService {
         Assert.notNull(username, "Username cannot be null");
         return userRepository
                 .findByUsername(username)
-                .orElseThrow(() -> new EntityNotFoundException("AuthUser with username: " + username + " doesn't exist"));
+                .orElseThrow(() -> new UsernameNotFoundException("User with username: " + username + " doesn't exist"));
     }
 
     @Override
@@ -114,6 +111,6 @@ public class UserServiceImpl implements UserService {
         Assert.notNull(username, "Username cannot be null");
         return userRepository
                 .findByUsernameWithRoles(username)
-                .orElseThrow(() -> new EntityNotFoundException("AuthUser with username: " + username + " doesn't exist"));
+                .orElseThrow(() -> new UsernameNotFoundException("User with username: " + username + " doesn't exist"));
     }
 }

@@ -1,6 +1,5 @@
 package interviewgether.authserver.exception;
 
-import interviewgether.authserver.exception.DAL.UserAlreadyExistsException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.MethodArgumentNotValidException;
@@ -13,7 +12,7 @@ import java.util.Map;
 
 
 // Service that handles all exceptions
-// Helpful when it comes to displaying proper error for client
+// Helpful when it comes to displaying proper error for the client
 // Helps to convert any exception to same ApiErrorResponse class
 @RestControllerAdvice
 public class ApiExceptionHandler{
@@ -30,11 +29,11 @@ public class ApiExceptionHandler{
         return errorMap;
     }
 
-    @ExceptionHandler(UserAlreadyExistsException.class)
-    public ResponseEntity<ApiErrorResponse> handleUserAlreadyExistsException(UserAlreadyExistsException e){
+    @ExceptionHandler(ApiServiceException.class)
+    public ResponseEntity<ApiErrorResponse> handleApiServiceException(ApiServiceException e){
         HttpStatus httpStatus = HttpStatus.BAD_REQUEST;
         Map<String, String> errorDetails = new HashMap<>();
-        errorDetails.put(e.getCauseFieldName(), e.getMessage());
+        errorDetails.put(e.getCausedBy(), e.getMessage());
         ApiErrorResponse apiErrorResponse = new ApiErrorResponse(
                 httpStatus.value(),
                 httpStatus.toString(),
