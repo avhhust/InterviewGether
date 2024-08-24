@@ -1,27 +1,27 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useMediaQuery } from 'react-responsive';
 import { Link } from "react-router-dom";
 import { ProfileIcon } from './ProfileIcon';
 import { AppLogo } from './AppLogo';
 import { redirectToAuthServer } from '../../services/apiService';
 import Button from './Button';
+import Menu from './Menu';
+import { useAuth } from '../../auth/AuthContext';
 
-const Navbar = () => {
+const Header = () => {
   const isMobile = useMediaQuery({ maxWidth: 767 });
-  const [isUserAuthenticated, setIsUserAuthenticated] = useState(false);
+  const [showMenu, setShowMenu] = useState(false);
+
+  // const {isAuthenticated} = useAuth();
 
   const handleSignIn = (e) => {
     e.preventDefault();
     redirectToAuthServer();
   }
 
-  const authBtn = (
-    <Button label={'Sign In'} onClick={handleSignIn} id={'signin_btn'}/>
-  );
-
-  const profile = (
-    <ProfileIcon src={""} alt={"Photo"} />
-  );
+  // useEffect(() => {
+    // setShowMenu(isAuthenticated);
+  // }, [isAuthenticated]);
 
   const menu_links = [
     { path: "/home", label: "Home" },
@@ -30,8 +30,8 @@ const Navbar = () => {
   ]
 
   return (
-    <div className="navbar_container">
-      <div className="navbar">
+    <div className="header_container">
+      <div className="header">
         
         <AppLogo appName={"InterviewGether"} link={'/'} />
         
@@ -44,11 +44,14 @@ const Navbar = () => {
             ))}
           </ul>
         </div>
-
-        {isUserAuthenticated ? profile : authBtn}
+        
+        {
+          showMenu ? <Menu/> : 
+          <Button label={'Sign In'} onClick={handleSignIn} id={'signin_btn'}/>
+        }
       </div>
     </div>
   );
 }
 
-export default Navbar;
+export default Header;

@@ -10,7 +10,8 @@ import Root from './pages/Root'
 import HomePage from './pages/HomePage';
 import ProfilePage from './pages/ProfilePage';
 import NotFoundPage from './pages/NotFoundPage';
-import ProtectedRoutes from './auth/ProtectedRoutes';
+import ProtectedRoute from './auth/ProtectedRoute';
+import { AuthProvider } from './auth/AuthContext';
 
 export const router = createBrowserRouter([
   {
@@ -18,7 +19,7 @@ export const router = createBrowserRouter([
     errorElement: <NotFoundPage/>,
     children: [
       {
-        element: <ProtectedRoutes/>,
+        // element: <ProtectedRoute/>,
         children: [
           {
             path: '/profile',
@@ -40,13 +41,11 @@ export const router = createBrowserRouter([
       }
     ]
   }
-]);
+], {basename: "/ui"});
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
-  <React.StrictMode>
     <RouterProvider router={router}/>
-  </React.StrictMode>
 );
 
 // If you want to start measuring performance in your app, pass a function

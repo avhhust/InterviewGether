@@ -1,13 +1,13 @@
-.navbar_container{
-    height: 60px;
-    max-height: 70px;
-    min-height: 40px;
+.header_container{
+    position: relative;
+    height: 70px;
+
     display: flex;
     justify-content: center;
     background-color: white;
 }
 
-.navbar{
+.header{
     width: 1300px;
     height: 100%;
     display: flex;
@@ -15,13 +15,11 @@
     justify-content: space-between;
 }
 
-.navbar{ 
+.header{ 
     .app-name{
         font-size: 20px;
         width: 100%;
     }
-
-    .menu{}
 
     .links{
         padding: 0;
@@ -42,26 +40,10 @@
         transition: all 0.2s ease-in-out;
         font-weight: bold;
     }
-
-    .slide_menu{
-
-    }
     
     #signin_btn{
         min-width: 80px;
         aspect-ratio: 2/1;
     }
     
-    .profile-icon{
-        height: 70%;
-        aspect-ratio: 1/1;
-        border-radius: 50%;
-        overflow: hidden;
-        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
-    }
-    
-    .profile-icon .profile-image, a{
-        height: 100%;
-        object-fit: cover;
-    }
 }

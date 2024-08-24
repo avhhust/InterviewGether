@@ -4,6 +4,7 @@
 @import './input_field_styles.css';
 @import './not_found_styles.css';
 @import './footer_styles.css';
+@import './menu_styles.css';
 
 body {
   margin: 0;

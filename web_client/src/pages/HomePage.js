@@ -3,15 +3,16 @@ import { api } from '../services/apiService';
 
 const HomePage = () => {
 
-  // const[greeting, setGreeting] = useState('Welcome to InterviewGether!');
   const[apiResponse, setApiResponse] = useState('');
 
-  const handleApiCall = (e) => {
+  const handleApiCall = async (e) => {
     e.preventDefault();
-    api.get('/api/profile')
-    .then(response => setApiResponse(response.data))
-    .catch(error => console.log(error))
+    try{
+      const response = await api.get('/api/profile');
+      setApiResponse(response.data);
+    } catch(error){
 
+    }
   }
   
   return (
