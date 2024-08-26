@@ -1,0 +1,10 @@
+services:
+  postgres:
+    image: postgres:alpine
+    restart: always
+    ports:
+      - "8054:5432"
+    environment:
+      - POSTGRES_USER=${DB_USER}
+      - POSTGRES_PASSWORD=${DB_PASSWORD}
+      - POSTGRES_DB=${DB_NAME}

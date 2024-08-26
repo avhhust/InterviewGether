@@ -44,6 +44,12 @@
 			<artifactId>spring-security-oauth2-jose</artifactId>
 		</dependency>
 
+		<!-- DOCKER -->
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-docker-compose</artifactId>
+		</dependency>
+
 		<dependency>
 			<groupId>org.postgresql</groupId>
 			<artifactId>postgresql</artifactId>
