@@ -1,0 +1,49 @@
+.header_container{
+    position: relative;
+    height: 70px;
+
+    display: flex;
+    justify-content: center;
+    background-color: white;
+}
+
+.header{
+    width: 1300px;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.header{ 
+    .app-name{
+        font-size: 20px;
+        width: 100%;
+    }
+
+    .links{
+        padding: 0;
+        display: flex;
+    }
+
+    .links li{
+        list-style: none;
+    }
+    
+    .links li:not(:last-child){
+        margin-right: 15px;
+    }
+
+    .links li a:hover{
+        font-weight: bold;
+        text-shadow: 8px 4px 4px rgba(0, 0, 0, 0.3);
+        transition: all 0.2s ease-in-out;
+        font-weight: bold;
+    }
+    
+    #signin_btn{
+        min-width: 80px;
+        aspect-ratio: 2/1;
+    }
+    
+}

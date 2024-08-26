@@ -6,45 +6,46 @@ import {
   createBrowserRouter,
   RouterProvider 
 } from 'react-router-dom';
-import Root from './routes/Root'
-import LoginPage from './routes/LoginPage';
-import HomePage from './routes/HomePage';
-import SignupPage from './routes/SignupPage';
+import Root from './pages/Root'
+import HomePage from './pages/HomePage';
+import ProfilePage from './pages/ProfilePage';
+import NotFoundPage from './pages/NotFoundPage';
+import ProtectedRoute from './auth/ProtectedRoute';
+import { AuthProvider } from './auth/AuthContext';
 
 export const router = createBrowserRouter([
   {
-    path: '/',
     element: <Root/>,
+    errorElement: <NotFoundPage/>,
     children: [
       {
-        path: 'home',
+        // element: <ProtectedRoute/>,
+        children: [
+          {
+            path: '/profile',
+            element: <ProfilePage/>
+          },
+        ]
+      },
+      {
+        path: '/home',
         element: <HomePage/>,
       },
       {
-        path: 'login',
-        element: <LoginPage/>,
-      },
-      {
-        path: 'register',
-        element: <SignupPage/>,
-      },
-      {
-        path: 'about',
+        path: '/about',
         // element:
       },
       {
-        path: 'contacts',
+        path: '/contacts',
         // element:
       }
     ]
   }
-]);
+], {basename: "/ui"});
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
-  <React.StrictMode>
     <RouterProvider router={router}/>
-  </React.StrictMode>
 );
 
 // If you want to start measuring performance in your app, pass a function

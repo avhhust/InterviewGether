@@ -1,8 +1,10 @@
-@import './auth_styles.css';
 @import './home_styles.css';
-@import './desktop_navbar_styles.css';
+@import './header_styles.css';
 @import './responsive-auth_config.css';
-@import './input-field_styles.css';
+@import './input_field_styles.css';
+@import './not_found_styles.css';
+@import './footer_styles.css';
+@import './menu_styles.css';
 
 body {
   margin: 0;
@@ -16,7 +18,7 @@ body {
   font-family: "Poppins", sans-serif;
   font-weight: 400;
   font-style: normal;
-
+  /* background-color: #E8E8E8 */
 }
 
 code {
@@ -58,5 +60,33 @@ p, h1, h2, h3, h4, h5, h6 {
 
 a{
   text-decoration: none;
-  color: rgba(65, 65, 245, 0.894);
+  color: black;
+}
+
+/* CUSTOM STYLES */
+
+.main_container > *{
+  padding: 0 20px;
+  margin: 0 auto;
+}
+
+.page{
+  height: 100vh;
+}
+
+/* DEPRECATED --- TO REMOVE*/
+
+/* .blue_theme{
+  color: white;
+  background-color: #1d3e5bec;
+} */
+/* DEPRECATED --- TO REMOVE */
+.rounded_btn{
+  display: block;
+  width: fit-content;
+  padding: 5px 10px;
+  border-radius: 50px;
+  border: 1px solid;
+  cursor: pointer;
+  background: none;
 }
